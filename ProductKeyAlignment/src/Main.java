@@ -40,6 +40,7 @@ public class Main {
 					boolean isNewKey = true;
 					String k = prop.getKey();
 					String v = prop.getValue();
+					if (k !="shop" && k !="url" && k !="modelID" && k != "title"  ){
 					for (Key mm : KeyList) {
 						if (mm.getName() == k) {
 							// Toevoegen van de nieuwe value aan de juiste key
@@ -52,6 +53,7 @@ public class Main {
 					if (isNewKey) {
 						Key p = new Key(k, v);
 						KeyList.add(p);
+					}
 					}
 				}
 			}
@@ -116,6 +118,149 @@ public class Main {
 			}
 
 		}
+		// Object List with all the combinations of two different shops
+		ArrayList<Alignments> allAlignments= new ArrayList<Alignments>();
+		// All scores that can be obtained
+
+		// parameters to decide if a match is sufficiently good
+		double minNameScore = 0.0;	// not yet used
+		double similarityThreshold = 1.7; // min score to be considered a pair
+		
+		// Weights of the obtained score
+		double nameScoreWeight=1.1;
+		double doubleScoreWeight=2;
+		double stringScoreWeight=2;
+		double covScoreWeight=0.5;
+		double divScoreWeight=0.5;
+		double unitScoreWeight=0.5;
+
+		
+				
+		
+		ArrayList<Shop> checkedShops = new ArrayList<Shop>(); // checked welke shops al een keer zijn vergeleken
+
+		/*
+		boolean assigning=true;
+		
+		Key bestPairKey1=null;
+		Key bestPairKey2=null;
+		Double highestPairScore = -1.0;
+		Key bestMatchingKey2= null;
+		Double highestKey2Score= -1.0;
+		Key bestMatchingKey2= null;
+		*/
+		
+
+		
+		
+		for (Shop shop1: ShopList ){ // check all combinations of shops in the ShopList
+			checkedShops.add(shop1);
+			for (Shop shop2: ShopList){
+				if (!checkedShops.contains(shop2)){	//check if the current combination of shops isnt checked allready
+					//next line can be used to see wich combination of shops are considered
+					//System.out.println( "shop 1 : " + shop1.getName() + " wordt vergeleken met shop: "  +shop2.getName() );
+					// make a new allignment object which contains 2 shops and a list with keymatches
+					Alignments current = new Alignments(shop1,shop2); 
+					// add the allingment object to list so you can retrieve it later on
+					allAlignments.add(current);	
+					// are there still combinations of keys that score better than 1.7 
+					boolean assigning=true; 
+					// make lists of keys that are already matched between the two shops
+					ArrayList<Key> assignedKeys1= new ArrayList<Key>();
+					ArrayList<Key> assignedKeys2= new ArrayList<Key>();
+					while (assigning==true){
+						// these Key are the best scoring keys that are found yet
+						Key bestPairKey1=null;
+						Key bestPairKey2=null;
+						Key PairKey2=null;
+						double highestPairScore=-1.0;
+						
+							for (Key key1 : shop1.getKey()){
+								if (!assignedKeys1.contains(key1)){
+									
+									Key bestMatchingKey2=null; // what is the best match with the current k1 and all k2
+									double highestKey2Score=-1.0;
+										for (Key key2 : shop2.getKey()){
+											if (!assignedKeys2.contains(key2)){
+												double finalScore=-1;
+												double nameScore = 0;
+												double doubleScore = 0;
+												double stringScore = 0;
+												double covScore = 0;
+												double divScore = 0;
+												//double unitScore = 0;
+												double isString = 0;
+												if (key1.getType() != key2.getType()) {
+													 break;
+												}
+												else{
+													
+													
+													nameScore = metricAlg.similarity(key1.getName(), key2.getName());
+													//if (nameScore < minNameScore) {break;} // In nicks code it says the following: if(key_score<min_key_score){continue;} //too risky
+													covScore = -java.lang.Math.pow(key1.getCoverage() - key2.getCoverage(), 2.0);
+													divScore = metricAlg.diversit(key1.getDiversity(), key2.getDiversity());
+													if (key1.getType() == "String") {
+														stringScore = metricAlg.jaccard_similarity(key1.getUniqueStripString(), key2.getUniqueStripString());
+														isString = 0.4;
+														
+														
+													}
+													else {
+														double p = TT.getp(key1.getUniquesplitList(), key2.getUniquesplitList());
+														double jacardi = metricAlg.getJacardSimilarityDouble(key1.getUniquesplitList(), key2.getUniquesplitList());
+														doubleScore = java.lang.Math.max(p, jacardi);
+														//System.out.println("deze string is van type double" + key2.getName()); // A lot keys are considered strings while they are doubles
+													}
+													finalScore= nameScore*nameScoreWeight + covScore*covScoreWeight + divScore*divScoreWeight + stringScore*stringScoreWeight+doubleScore*doubleScoreWeight + isString;
+													// if you want to know why a certain key is matched uncomment the following if 
+													if(key1.getName()=="Discontinued by manufacturer") System.out.println(key1.getName() + "      " + key2.getName() +"   final   " + finalScore + " nameScore " + nameScore +" div " + divScore + " cov " + covScore + " string " + stringScore + " double  " + doubleScore + " Iss  " + isString);
+													}
+												
+													if (finalScore > highestKey2Score){
+														highestKey2Score = finalScore;
+														bestMatchingKey2 = key2;
+													}
+											}
+										}
+										if (highestKey2Score > highestPairScore){
+											highestPairScore=highestKey2Score;
+											bestPairKey1=key1;
+											bestPairKey2=bestMatchingKey2;	
+										 //System.out.println(highestPairScore + "  hoogste tot nog toe  " + bestPairKey1.getName() + " met  " + bestPairKey2.getName());
+										}
+								}
+							}
+							if(highestPairScore >= similarityThreshold){
+								//System.out.println("de Key :" + bestPairKey1.getName() + " is gematcht met: "+ bestPairKey2.getName() + " met een score van : "  + highestPairScore);
+								keyPair newKeyPair =new keyPair(bestPairKey1,bestPairKey2,highestPairScore);
+								current.addKeyPair(newKeyPair);
+								assigning=true;
+								assignedKeys1.add(bestPairKey1);
+								assignedKeys2.add(bestPairKey2);
+							}
+							else{
+								// threshold is probably to high, if you uncomment next line you can see that a lot of reasonable options are declined
+								//System.out.println(bestPairKey1.getName() +"  " + bestPairKey1.getName() +"    "+ highestPairScore);
+								assigning=false;
+							}
+					}
+				}
+			}
+		}
+		
+		
+		// In the next tester you can see what the algorithm has produced. Only alignment 0 performs pretty well
+		// this can be attributed to the fact that the Weights of scores are fitted for the first combination of shops
+		Alignments tester = allAlignments.get(0);
+		System.out.println("in this alignment the keys of the shops: " + tester.getFirstShop().getName() +" and: " + tester.getSecondShop().getName() + " are compared" );
+		for (keyPair pp: tester.getKeyPairList()){
+			System.out.println( "key : " + pp.getKey1().getName() + " is matched with key: " + pp.getKey2().getName());
+			
+		}
+			
+		
+
 
 		/*
 		 * Nu heeft elke Key dus ook een string Type die ofwel de waarde
@@ -123,24 +268,11 @@ public class Main {
 		 * datatype de Key is. Je kunt deze waarde krijgen door de methode
 		 * key.getType() te gebruiken
 		 */
-		// scores of comparing 2 keys
-		double nameScore = 0;
-		double doubleScore = 0;
-		double stringScore = 0;
-		double covScore = 0;
-		double divScore = 0;
-		double unitScore = 0;
-		double isString = 0;
 
-		// parameters
-		double similarityThreshold = 0;
-		double minNameScore = 0;
-		double stringBonus = 0;
-		double minContainedScore = 0;
-
+		/*
 		// two string to compare for testing the initial algorithm
-		Key k1 = ShopList.get(0).getKey().get(3);
-		Key k2 = ShopList.get(1).getKey().get(15);
+		Key k1 = ShopList.get(1).getKey().get(4);
+		Key k2 = ShopList.get(2).getKey().get(4);
 		boolean score = true;
 		if (k1.getType() == k2.getType()) {
 			nameScore = metricAlg.similarity(k1.getName(), k2.getName());
@@ -157,12 +289,21 @@ public class Main {
 		} else {
 			score = false;
 		}
+		
+		*/
+		
+		
+		
+		
+		
+		
+		/*
 		System.out.println("we vergelijken de keys : " + k1.getName() + " en  " + k2.getName());
 		System.out.println("deze key zijn van zelfde type " + score + ", de naam score = " + nameScore
 				+ " the divScore = " + divScore);
 		System.out.println(
 				"de covScore = " + covScore + " de stringScore = " + stringScore + " de doubleScore " + doubleScore);
-
+		*/
 	}
 
 }
