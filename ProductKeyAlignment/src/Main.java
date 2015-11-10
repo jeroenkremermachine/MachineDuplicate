@@ -9,7 +9,6 @@ public class Main {
 	public static void main(String[] args) {
 		/*
 		 * Reading the data
-		 * HALLO
 		 */
 
 		// Aanmaken van een een aantal classes
