@@ -26,8 +26,12 @@ public class Ttest {
 		for (int i = 0; i < ValuesB.length; i++) {
 			ValuesB[i] = b.get(i);
 		}
+		if (a.size()>1 && b.size()>1){
 		double p_value = studentTest.tTest(ValuesA, ValuesB);
-		return p_value;
+		return p_value;}
+		else{
+			return 0.0;
+		}
+		}
 	}
 
-}
