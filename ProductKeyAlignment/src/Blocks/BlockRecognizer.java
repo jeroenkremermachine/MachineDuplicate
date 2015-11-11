@@ -88,6 +88,9 @@ public class BlockRecognizer {
 		else if(s.matches("J")){
 			return true;
 		}
+		else if(s.matches("lb")){
+			return true;
+		}
 		else{
 			return false;
 		}
