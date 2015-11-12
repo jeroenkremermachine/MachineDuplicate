@@ -5,12 +5,15 @@ import KeyTypes.KeyDoubleFinder;
 import Comparison.*;
 
 public class Main {
+	
+    public static Map<String, Double> best_params = new HashMap();
 
 	public static void main(String[] args) {
 		/*
 		 * Reading the data
 		 */
-
+		
+		
 		// Aanmaken van een een aantal classes
 		DataReader io = new DataReader();
 		Ttest TT = new Ttest();
@@ -130,14 +133,31 @@ public class Main {
 		double minNameScore = 0.0; // not yet used
 		double similarityThreshold = 1.6; // min score to be considered a pair
 
-		// Weights of the obtained score
-		double nameScoreWeight = 0.9;
-		double doubleScoreWeight = 1.7;
-		double stringScoreWeight = 2;
-		double covScoreWeight = 0.3;
-		double divScoreWeight = 0.0;
-		double unitScoreWeight = 0.0;
+		// Weights of the obtained score (yet only the standard weights are used)
 
+		
+        Double[] key_weights            =new Double[]{0.9};//1.1 of 1 of 0.9
+        Double[] double_weights         =new Double[]{1.7};//2 ook 1.75-2.5
+        Double[] string_weights         =new Double[]{2.0};//2 ook 2-2.5
+        Double[] cov_weights            =new Double[]{0.3};//0.5 ook 0.2 -0.8
+        Double[] div_weights            =new Double[]{0.0};//0.5 ook 0-0.5
+        Double[] unit_weights           =new Double[]{0.5};//0.5 alles
+        double highest_f1 = 0.0;
+   
+            for (double key_weight : key_weights){
+                        for (double cov_weight : cov_weights){ 
+                            for (double div_weight : div_weights){ 
+                                for (double unit_weight : unit_weights){ 
+                                        for (double string_weight : string_weights){ 
+                                                for (double double_weight : double_weights){ 
+                                                // dit stukje is een beetje overbodig natuurlijk, maar dit los ik maandag op met jullie hulp. 
+                                            		double nameScoreWeight = key_weight; 
+                                            		double doubleScoreWeight = double_weight;
+                                            		double stringScoreWeight = string_weight;
+                                            		double covScoreWeight = cov_weight;
+                                            		double divScoreWeight = div_weight;
+                                            		double unitScoreWeight = unit_weight;
+                                            		
 		ArrayList<Shop> checkedShops = new ArrayList<Shop>(); // checked welke
 																// shops al een
 																// keer zijn
@@ -303,7 +323,8 @@ public class Main {
 
 				boolean isAligned = false;
 				boolean isGolden = false;
-
+			
+ /* DIT STUK IN COMMENT VANWEGE MISSENDE GOLDENSTANDARD
 				if (foundAlignments.contains(tempKeyPair)) {
 					isAligned = true;
 				}
@@ -322,10 +343,34 @@ public class Main {
 				}
 			}
 		}
+
+				
 		double recall = tp / (tp + fn);
 		double precision = tp / (tp + fp);
 		double f1Measure = 2 * tp / (2 * tp + fp + fn);
 
+
+                                                            if (f1Measure > highest_f1){ //highest f1 aanmaken nog
+                                                                highest_f1=f1Measure;
+                                                                best_params.clear();
+                                                                //weights
+                                                                best_params.put("key_weight", key_weight );
+                                                                best_params.put("double_weight", double_weight );
+                                                                best_params.put("string_weight", string_weight );
+                                                                best_params.put("cov_weight", cov_weight );
+                                                                best_params.put("div_weight", div_weight );
+                                                                best_params.put("unit_weight",unit_weight );
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+									}	
+	
+
+
+/*
 		// In the next tester you can see what the algorithm has produced. Only
 		// alignment 0 performs pretty well
 		// this can be attributed to the fact that the Weights of scores are
@@ -372,6 +417,11 @@ public class Main {
 		 * "de covScore = " + covScore + " de stringScore = " + stringScore +
 		 * " de doubleScore " + doubleScore);
 		 */
-	}
+        
+                            /* IN ONDERSTE REGEL ZIJN DE }} PUUR OM HET PROGRAMMA TE LATEN RUNNEN
+      }
 
 }
+                            */
+				
+			}}}}}}}}}}
