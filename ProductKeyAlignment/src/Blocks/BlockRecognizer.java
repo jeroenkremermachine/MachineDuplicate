@@ -91,6 +91,55 @@ public class BlockRecognizer {
 		else if(s.matches("lb")){
 			return true;
 		}
+		else if(s.matches("kJ")){
+			return true;
+		}
+		else if(s.matches("ms")){
+			return true;
+		}
+		else if(s.matches("kHz")){
+			return true;
+		}
+		else if(s.matches("inches")){
+			return true;
+		}
+		else if(s.matches("pounds")){
+			return true;
+		}
+		else if(s.matches("Hours")){
+			return true;
+		}
+		else if(s.matches("hours")){
+			return true;
+		}
+		else if(s.matches("hrs")){
+			return true;
+		}
+		else if(s.matches("mm")){
+			return true;
+		}
+		else if(s.matches("lbs")){
+			return true;
+		}
+		else if(s.matches("Hz")){
+			return true;
+		}
+		else if(s.matches("W")){
+			return true;
+		}
+		else if(s.matches("years")){
+			return true;
+		}
+		else if(s.matches("Years")){
+			return true;
+		}
+		else if(s.matches("year")){
+			return true;
+		}
+		else if(s.matches("Year")){
+			return true;
+		}
+		// this ones can probably be added: p, ", i,
 		else{
 			return false;
 		}
