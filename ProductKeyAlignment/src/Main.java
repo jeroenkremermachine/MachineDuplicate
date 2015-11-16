@@ -314,22 +314,32 @@ public class Main {
 		int tn = 0;
 		int fp = 0;
 		int fn = 0;
-
+		
+		// Reading Golden Standard
+		CSVreader obj = new CSVreader();
+		ArrayList<KeyNamePair> GSnamepairlist = new ArrayList<KeyNamePair>();
+		GSnamepairlist = obj.readfile();
+		ArrayList<keyPair> foundAlignments = allAlignments.get(0).getKeyPairList();
+		
+	
+		
+		int i =0;
+		int k=0; 
 		for (Key key1 : ShopList.get(0).getKey()) {
 			for (Key key2 : ShopList.get(1).getKey()) {
-				// ArrayList<keyPair> goldenstandard = moet nog aangevuld
-				ArrayList<keyPair> foundAlignments = allAlignments.get(0).getKeyPairList();
-				keyPair tempKeyPair = new keyPair(key1, key2, 0.0);
+				KeyNamePair tempKeyNamePair = new KeyNamePair(key1.getName(), key2.getName());
 
 				boolean isAligned = false;
 				boolean isGolden = false;
-			
- /* DIT STUK IN COMMENT VANWEGE MISSENDE GOLDENSTANDARD
-				if (foundAlignments.contains(tempKeyPair)) {
+				
+				
+				if (foundAlignments.contains(tempKeyNamePair)) {
 					isAligned = true;
+					i++;
 				}
-				if (goldenstandard.contains(tempKeyPair)) {
+				if (GSnamepairlist.contains(tempKeyNamePair)) {
 					isGolden = true;
+					k++;
 				}
 
 				if (isAligned && isGolden) {
@@ -343,7 +353,9 @@ public class Main {
 				}
 			}
 		}
-
+        System.out.println("Werkt het??"+i +"En deze?"+k);                                        
+                                                
+/*
 				
 		double recall = tp / (tp + fn);
 		double precision = tp / (tp + fp);
@@ -424,4 +436,16 @@ public class Main {
 }
                             */
 				
-			}}}}}}}}}}
+ }}}}}}}
+
+	@Override
+	public int hashCode() {
+		// TODO Auto-generated method stub
+		return super.hashCode();
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		// TODO Auto-generated method stub
+		return super.equals(obj);
+	}}
