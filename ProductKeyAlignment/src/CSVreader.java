@@ -6,7 +6,6 @@ import java.io.IOException;
 import java.util.*;
 
 import Models.Key;
-import Models.KeyNamePair;
 import Models.keyPair;
 
 
@@ -17,13 +16,13 @@ public class CSVreader {
 
 
 
-	  public ArrayList<KeyNamePair> readfile() {
+	  public ArrayList<keyPair> readfile() {
 
 		String csvFile = "./data/GS.csv";
 		BufferedReader br = null;
 		String line = "";
 		String cvsSplitBy = ",";
-		ArrayList<KeyNamePair> GSnamepairlist = new ArrayList<KeyNamePair>(); 
+		ArrayList<keyPair> GSpairlist = new ArrayList<keyPair>(); 
 		
 		try {
 
@@ -32,12 +31,12 @@ public class CSVreader {
 
 			        // use comma as separator
 				String[] columns = line.split(cvsSplitBy);
-				String keyname1 = columns[1];
-				String keyname2 = columns[3];
+				Key key1 = new Key(columns[1],"");
+				Key key2 = new Key(columns[3],"");
 				
 				
-				KeyNamePair GSpair = new KeyNamePair(keyname1,keyname2);			
-				GSnamepairlist.add(GSpair);
+				keyPair GSpair = new keyPair(key1,key2,0.0);			
+				GSpairlist.add(GSpair);
 			}
 			
 
@@ -55,7 +54,7 @@ public class CSVreader {
 			}
 		}
 	  
-		return GSnamepairlist;
+		return GSpairlist;
 	  }
 	  
 }

@@ -254,16 +254,7 @@ public class Main {
 											finalScore = nameScore * nameScoreWeight + covScore * covScoreWeight
 													+ divScore * divScoreWeight + stringScore * stringScoreWeight
 													+ doubleScore * doubleScoreWeight + isString;
-											// if you want to know why a certain
-											// key is matched uncomment the
-											// following if
-											if (key1.getName() == "Discontinued by manufacturer")
-												System.out.println(key1.getName() + "      " + key2.getName()
-														+ "   final   " + finalScore + " nameScore " + nameScore
-														+ " div " + divScore + " cov " + covScore + " string "
-														+ stringScore + " double  " + doubleScore + " Iss  "
-														+ isString);
-										}
+												}
 
 										if (finalScore > highestKey2Score) {
 											highestKey2Score = finalScore;
@@ -310,38 +301,40 @@ public class Main {
 		 */
 
 		// Initializing
-		int tp = 0;
-		int tn = 0;
-		int fp = 0;
-		int fn = 0;
+		double tp = 0;
+		double tn = 0;
+		double fp = 0;
+		double fn = 0;
 		
 		// Reading Golden Standard
 		CSVreader obj = new CSVreader();
-		ArrayList<KeyNamePair> GSnamepairlist = new ArrayList<KeyNamePair>();
-		GSnamepairlist = obj.readfile();
+		ArrayList<keyPair> GSpairlist = new ArrayList<keyPair>();
+		GSpairlist = obj.readfile();
 		ArrayList<keyPair> foundAlignments = allAlignments.get(0).getKeyPairList();
-		
-	
-		
-		int i =0;
-		int k=0; 
+			
+		// Loop over al possible key pairs
 		for (Key key1 : ShopList.get(0).getKey()) {
 			for (Key key2 : ShopList.get(1).getKey()) {
-				KeyNamePair tempKeyNamePair = new KeyNamePair(key1.getName(), key2.getName());
+				keyPair tempKeyPair = new keyPair(key1, key2,0.0);
 
 				boolean isAligned = false;
 				boolean isGolden = false;
 				
+				// If a keypair is also aligned set isAligned to true
+				for (keyPair AlignedPair : foundAlignments){
+					if (AlignedPair.equals(tempKeyPair)){
+						isAligned = true;
+					}
+				}
 				
-				if (foundAlignments.contains(tempKeyNamePair)) {
-					isAligned = true;
-					i++;
+				// If a keypair is also in the golden standard set isGolden to true
+				for (keyPair GSPair : GSpairlist){
+					if (GSPair.equals(tempKeyPair)){
+						isGolden = true;
+					}
 				}
-				if (GSnamepairlist.contains(tempKeyNamePair)) {
-					isGolden = true;
-					k++;
-				}
-
+				
+				// Determine if the keypair is a true/false positive/negative and count it
 				if (isAligned && isGolden) {
 					tp++;
 				} else if (!isAligned && isGolden) {
@@ -353,15 +346,18 @@ public class Main {
 				}
 			}
 		}
-        System.out.println("Werkt het??"+i +"En deze?"+k);                                        
-                                                
-/*
-				
+		
+		// Calculate the different metrics
 		double recall = tp / (tp + fn);
 		double precision = tp / (tp + fp);
 		double f1Measure = 2 * tp / (2 * tp + fp + fn);
+		
+		// Print the different metrics, can be deleted if necessary
+		System.out.println("The recall is " + recall);
+		System.out.println("The precision is " + precision);
+		System.out.println("The f1Measure is " + f1Measure);
 
-
+/*
                                                             if (f1Measure > highest_f1){ //highest f1 aanmaken nog
                                                                 highest_f1=f1Measure;
                                                                 best_params.clear();
@@ -390,6 +386,7 @@ public class Main {
 		Alignments tester = allAlignments.get(0);
 		System.out.println("in this alignment the keys of the shops: " + tester.getFirstShop().getName() + " and: "
 				+ tester.getSecondShop().getName() + " are compared");
+		System.out.println("Willemijn is echt retegeil!");		
 		for (keyPair pp : tester.getKeyPairList()) {
 			System.out.println("key : " + pp.getKey1().getName() + " is matched with key: " + pp.getKey2().getName());
 
@@ -436,16 +433,4 @@ public class Main {
 }
                             */
 				
- }}}}}}}
-
-	@Override
-	public int hashCode() {
-		// TODO Auto-generated method stub
-		return super.hashCode();
-	}
-
-	@Override
-	public boolean equals(Object obj) {
-		// TODO Auto-generated method stub
-		return super.equals(obj);
-	}}
+ }}}}}}}}
