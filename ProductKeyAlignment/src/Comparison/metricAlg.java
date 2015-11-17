@@ -62,6 +62,7 @@ public class metricAlg {
 		intersectionXY.retainAll(y);
 		// System.out.println(intersectionXY.size());
 		return (double) intersectionXY.size() / (double) (xSize < ySize ? xSize : ySize);
+		//return (double) intersectionXY.size()/(xSize+ySize-intersectionXY.size());
 
 	}
 

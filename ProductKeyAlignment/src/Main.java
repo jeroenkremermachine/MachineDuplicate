@@ -3,6 +3,8 @@ import Models.*;
 import KeyTypes.*;
 import KeyTypes.KeyDoubleFinder;
 import Comparison.*;
+import java.io.FileNotFoundException;
+import java.io.PrintWriter;
 
 public class Main {
 	
@@ -24,8 +26,8 @@ public class Main {
 		ArrayList<String> sites = new ArrayList<String>();
 		sites.add("bestbuy.com");
 		sites.add("newegg.com");
-		sites.add("amazon.com");
-		sites.add("thenerds.net");
+		//sites.add("amazon.com");
+		//sites.add("thenerds.net");
 
 		// Read data from each webshop
 		for (String site : sites) {
@@ -204,6 +206,7 @@ public class Main {
 						double highestPairScore = -1.0;
 
 						for (Key key1 : shop1.getKey()) {
+	
 							if (!assignedKeys1.contains(key1)) {
 
 								Key bestMatchingKey2 = null; // what is the best
@@ -212,6 +215,8 @@ public class Main {
 																// k1 and all k2
 								double highestKey2Score = -1.0;
 								for (Key key2 : shop2.getKey()) {
+						
+									
 									if (!assignedKeys2.contains(key2)) {
 										double finalScore = -1;
 										double nameScore = 0;
@@ -221,8 +226,12 @@ public class Main {
 										double divScore = 0;
 										// double unitScore = 0;
 										double isString = 0;
+										
 										if (key1.getType() != key2.getType()) {
-											break;
+											
+
+											finalScore=-2; // zat een break hier, werkte niet goed. 
+											// Vergeleek daardoor niet alle mogelijke combi
 										} else {
 
 											nameScore = metricAlg.similarity(key1.getName(), key2.getName());
@@ -251,10 +260,14 @@ public class Main {
 												// keys are considered strings
 												// while they are doubles
 											}
+
 											finalScore = nameScore * nameScoreWeight + covScore * covScoreWeight
 													+ divScore * divScoreWeight + stringScore * stringScoreWeight
 													+ doubleScore * doubleScoreWeight + isString;
 												}
+
+									
+
 
 										if (finalScore > highestKey2Score) {
 											highestKey2Score = finalScore;
@@ -377,21 +390,37 @@ public class Main {
 									}	
 	
 
+*/
 
-/*
 		// In the next tester you can see what the algorithm has produced. Only
 		// alignment 0 performs pretty well
 		// this can be attributed to the fact that the Weights of scores are
 		// fitted for the first combination of shops
-		Alignments tester = allAlignments.get(0);
-		System.out.println("in this alignment the keys of the shops: " + tester.getFirstShop().getName() + " and: "
+		String fileName= "out.txt";
+		try{
+			PrintWriter outputStream = new PrintWriter(fileName);
+		
+			Alignments tester = allAlignments.get(0);
+			outputStream.println("in this alignment the keys of the shops: " + tester.getFirstShop().getName() + " and: "
 				+ tester.getSecondShop().getName() + " are compared");
-		System.out.println("Willemijn is echt retegeil!");		
-		for (keyPair pp : tester.getKeyPairList()) {
-			System.out.println("key : " + pp.getKey1().getName() + " is matched with key: " + pp.getKey2().getName());
+			System.out.println("Willemijn is echt retegeil!");		
+				for (keyPair pp : tester.getKeyPairList()) {
+					outputStream.println("key : " + pp.getKey1().getName() + " is matched with key: " + pp.getKey2().getName());
+					
 
 		}
+				outputStream.close();
+		}
+        catch (FileNotFoundException e){
+        	e.printStackTrace();
 
+        }
+		/*
+		ArrayList<Key> b = ShopList.get(0).getKey();
+		for (Key k:b){
+			System.out.println(k.getName());
+		}
+		*/
 		/*
 		 * Nu heeft elke Key dus ook een string Type die ofwel de waarde
 		 * "String" ofwel de waarde "Double1" heeft en aangeeft van welk
