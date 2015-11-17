@@ -9,6 +9,7 @@ public class Key
     private String name;
     private ArrayList<Value> values;
     private String type;
+    private String UnitMeasure;
     private ArrayList<String> stripString; // allStringValues alle string blocks
     private ArrayList<String> stripUniqueString; // k.StringValues all unique String Blocks
     private int nrStringValues; // nrStringValues aantal string blocks
@@ -115,5 +116,13 @@ public class Key
     {
         return coverage;
     }
+     
+     public void setUnitMeasure(String UM){
+    	 UnitMeasure = UM;
+     }
+     
+     public String getUnitMeasure(){
+    	 return UnitMeasure;
+     }
 }
 

@@ -8,7 +8,7 @@ import java.io.PrintWriter;
 
 public class Main {
 	
-    public static Map<String, Double> best_params = new HashMap();
+    
 
 	public static void main(String[] args) {
 		/*
@@ -98,9 +98,14 @@ public class Main {
 				// Type bepalen
 				KeyTypeRecognizer keytyperecognizer = new KeyTypeRecognizer();
 				Type type = keytyperecognizer.createType(bSet);
-				String stringType = type.getType();
+				String stringType = type.getType();				
 				// Type instellen van key
 				key.setType(stringType);
+				// Unit measure instellen van key
+				if(bSet.getNrUnitMeasures()>0){
+					String UnitMeasure = keytyperecognizer.getUnitMeasure(bSet);
+					key.setUnitMeasure(UnitMeasure);
+				}
 
 				// laden van alle doubles in de Key's Double list
 				KeyDoubleFinder kdf = new KeyDoubleFinder();
@@ -109,8 +114,7 @@ public class Main {
 					key.addUniqueSplitList(kdf.getUniqueDoubles(key.getsplitList()));
 					key.addstdv(kdf.getStdvDoubles(key.getsplitList()));
 				}
-				// Arie: wil je dit niet alleen doen als de key van type String
-				// is?
+				
 				key.addStripString(kdf.getStripString(bSet));
 				key.addUniqueStripString(kdf.getUniqueStripString(key.getStripString()));
 				key.addDiversity(kdf.getUniqueValues(vSet));
@@ -127,51 +131,45 @@ public class Main {
 			}
 
 		}
-		// Object List with all the combinations of two different shops
-		ArrayList<Alignments> allAlignments = new ArrayList<Alignments>();
+
+		Map<String, Double> best_params = new HashMap<String, Double>();
+		ArrayList<Alignments> bestAlignments = new ArrayList<Alignments>();
 		// All scores that can be obtained
 
 		// parameters to decide if a match is sufficiently good
 		double minNameScore = 0.0; // not yet used
-		double similarityThreshold = 1.6; // min score to be considered a pair
+		Double[] similarityThresholds = new Double[]{0.9}; // min score to be considered a pair
 
+		
 		// Weights of the obtained score (yet only the standard weights are used)
 
 		
-        Double[] key_weights            =new Double[]{0.9};//1.1 of 1 of 0.9
-        Double[] double_weights         =new Double[]{1.7};//2 ook 1.75-2.5
-        Double[] string_weights         =new Double[]{2.0};//2 ook 2-2.5
-        Double[] cov_weights            =new Double[]{0.3};//0.5 ook 0.2 -0.8
-        Double[] div_weights            =new Double[]{0.0};//0.5 ook 0-0.5
-        Double[] unit_weights           =new Double[]{0.5};//0.5 alles
+        Double[] key_weights            =new Double[]{0.8};//1.1 of 1 of 0.9
+        Double[] double_weights         =new Double[]{1.0};//2 ook 1.75-2.5
+        Double[] string_weights         =new Double[]{1.0};//2 ook 2-2.5
+        Double[] cov_weights            =new Double[]{0.2};//0.5 ook 0.2 -0.8
+        Double[] div_weights            =new Double[]{0.5};//0.5 ook 0-0.5
+        Double[] unit_weights           =new Double[]{0.0};//0.5 alles
         double highest_f1 = 0.0;
+        int counter = 0;
    
-            for (double key_weight : key_weights){
-                        for (double cov_weight : cov_weights){ 
-                            for (double div_weight : div_weights){ 
-                                for (double unit_weight : unit_weights){ 
-                                        for (double string_weight : string_weights){ 
-                                                for (double double_weight : double_weights){ 
-                                                // dit stukje is een beetje overbodig natuurlijk, maar dit los ik maandag op met jullie hulp. 
-                                            		double nameScoreWeight = key_weight; 
-                                            		double doubleScoreWeight = double_weight;
-                                            		double stringScoreWeight = string_weight;
-                                            		double covScoreWeight = cov_weight;
-                                            		double divScoreWeight = div_weight;
-                                            		double unitScoreWeight = unit_weight;
+            for (double nameScoreWeight : key_weights){
+                        for (double covScoreWeight : cov_weights){ 
+                            for (double divScoreWeight : div_weights){ 
+                                for (double unitScoreWeight : unit_weights){ 
+                                        for (double stringScoreWeight : string_weights){ 
+                                                for (double doubleScoreWeight : double_weights){
+                                                	for (double similarityThreshold : similarityThresholds){
+                                                		// Object List with all the combinations of two different shops
+                                                		ArrayList<Alignments> allAlignments = new ArrayList<Alignments>();
+                                                	counter++;
+                                                	System.out.println(counter);
                                             		
 		ArrayList<Shop> checkedShops = new ArrayList<Shop>(); // checked welke
 																// shops al een
 																// keer zijn
 																// vergeleken
 
-		/*
-		 * boolean assigning=true;
-		 * 
-		 * Key bestPairKey1=null; Key bestPairKey2=null; Double highestPairScore
-		 * = -1.0; Key bestMatchingKey2= null; Double highestKey2Score= -1.0;
-		 * Key bestMatchingKey2= null;
-		 */
 
 		for (Shop shop1 : ShopList) { // check all combinations of shops in the
 										// ShopList
@@ -180,12 +178,6 @@ public class Main {
 				if (!checkedShops.contains(shop2)) { // check if the current
 														// combination of shops
 														// isnt checked allready
-					// next line can be used to see wich combination of shops
-					// are considered
-					// System.out.println( "shop 1 : " + shop1.getName() + "
-					// wordt vergeleken met shop: " +shop2.getName() );
-					// make a new allignment object which contains 2 shops and a
-					// list with keymatches
 					Alignments current = new Alignments(shop1, shop2);
 					// add the allingment object to list so you can retrieve it
 					// later on
@@ -224,22 +216,16 @@ public class Main {
 										double stringScore = 0;
 										double covScore = 0;
 										double divScore = 0;
-										// double unitScore = 0;
+										double unitScore = 0;
 										double isString = 0;
 										
 										if (key1.getType() != key2.getType()) {
-											
-
-											finalScore=-2; // zat een break hier, werkte niet goed. 
-											// Vergeleek daardoor niet alle mogelijke combi
+											break;
 										} else {
 
 											nameScore = metricAlg.similarity(key1.getName(), key2.getName());
 											// if (nameScore < minNameScore)
-											// {break;} // In nicks code it says
-											// the following:
-											// if(key_score<min_key_score){continue;}
-											// //too risky
+											// {break;} 
 											covScore = -java.lang.Math.pow(key1.getCoverage() - key2.getCoverage(),
 													2.0);
 											divScore = metricAlg.diversit(key1.getDiversity(), key2.getDiversity());
@@ -254,16 +240,21 @@ public class Main {
 												double jacardi = metricAlg.getJacardSimilarityDouble(
 														key1.getUniquesplitList(), key2.getUniquesplitList());
 												doubleScore = java.lang.Math.max(p, jacardi);
-												// System.out.println("deze
-												// string is van type double" +
-												// key2.getName()); // A lot
-												// keys are considered strings
-												// while they are doubles
+											}
+											
+											// Calculating the unit score
+											if (key1.getUnitMeasure() == null || key2.getUnitMeasure() == null){
+												unitScore = 0;
+											}
+											else if (key1.getUnitMeasure() == key2.getUnitMeasure()){
+												unitScore = 1;
+											} else {
+												unitScore = -1;
 											}
 
 											finalScore = nameScore * nameScoreWeight + covScore * covScoreWeight
 													+ divScore * divScoreWeight + stringScore * stringScoreWeight
-													+ doubleScore * doubleScoreWeight + isString;
+													+ doubleScore * doubleScoreWeight + isString + unitScoreWeight * unitScore;
 												}
 
 									
@@ -279,29 +270,16 @@ public class Main {
 									highestPairScore = highestKey2Score;
 									bestPairKey1 = key1;
 									bestPairKey2 = bestMatchingKey2;
-									// System.out.println(highestPairScore + "
-									// hoogste tot nog toe " +
-									// bestPairKey1.getName() + " met " +
-									// bestPairKey2.getName());
 								}
 							}
 						}
 						if (highestPairScore >= similarityThreshold) {
-							// System.out.println("de Key :" +
-							// bestPairKey1.getName() + " is gematcht met: "+
-							// bestPairKey2.getName() + " met een score van : "
-							// + highestPairScore);
 							keyPair newKeyPair = new keyPair(bestPairKey1, bestPairKey2, highestPairScore);
 							current.addKeyPair(newKeyPair);
 							assigning = true;
 							assignedKeys1.add(bestPairKey1);
 							assignedKeys2.add(bestPairKey2);
 						} else {
-							// threshold is probably to high, if you uncomment
-							// next line you can see that a lot of reasonable
-							// options are declined
-							// System.out.println(bestPairKey1.getName() +" " +
-							// bestPairKey1.getName() +" "+ highestPairScore);
 							assigning = false;
 						}
 					}
@@ -319,13 +297,14 @@ public class Main {
 		double fp = 0;
 		double fn = 0;
 		
+		
 		// Reading Golden Standard
 		CSVreader obj = new CSVreader();
 		ArrayList<keyPair> GSpairlist = new ArrayList<keyPair>();
 		GSpairlist = obj.readfile();
 		ArrayList<keyPair> foundAlignments = allAlignments.get(0).getKeyPairList();
 			
-		// Loop over al possible key pairs
+		// Loop over all possible key pairs
 		for (Key key1 : ShopList.get(0).getKey()) {
 			for (Key key2 : ShopList.get(1).getKey()) {
 				keyPair tempKeyPair = new keyPair(key1, key2,0.0);
@@ -365,22 +344,21 @@ public class Main {
 		double precision = tp / (tp + fp);
 		double f1Measure = 2 * tp / (2 * tp + fp + fn);
 		
-		// Print the different metrics, can be deleted if necessary
-		System.out.println("The recall is " + recall);
-		System.out.println("The precision is " + precision);
-		System.out.println("The f1Measure is " + f1Measure);
 
-/*
-                                                            if (f1Measure > highest_f1){ //highest f1 aanmaken nog
+
+                                                            if (f1Measure > highest_f1){
                                                                 highest_f1=f1Measure;
                                                                 best_params.clear();
+                                                                bestAlignments.clear();
                                                                 //weights
-                                                                best_params.put("key_weight", key_weight );
-                                                                best_params.put("double_weight", double_weight );
-                                                                best_params.put("string_weight", string_weight );
-                                                                best_params.put("cov_weight", cov_weight );
-                                                                best_params.put("div_weight", div_weight );
-                                                                best_params.put("unit_weight",unit_weight );
+                                                                best_params.put("Similarity Threshold", similarityThreshold);
+                                                                best_params.put("nameScoreWeight", nameScoreWeight );
+                                                                best_params.put("doubleScoreWeight", doubleScoreWeight );
+                                                                best_params.put("stringScoreWeight", stringScoreWeight );
+                                                                best_params.put("covScoreWeight", covScoreWeight );
+                                                                best_params.put("divScoreWeight", divScoreWeight );
+                                                                best_params.put("unitScoreWeight",unitScoreWeight );
+                                                        		bestAlignments = allAlignments;
                                                             }
                                                         }
                                                     }
@@ -388,9 +366,10 @@ public class Main {
                                             }
                                         }
 									}	
-	
+            }
+            System.out.println(highest_f1);
+            System.out.println(best_params);
 
-*/
 
 		// In the next tester you can see what the algorithm has produced. Only
 		// alignment 0 performs pretty well
@@ -400,7 +379,7 @@ public class Main {
 		try{
 			PrintWriter outputStream = new PrintWriter(fileName);
 		
-			Alignments tester = allAlignments.get(0);
+			Alignments tester = bestAlignments.get(0);
 			outputStream.println("in this alignment the keys of the shops: " + tester.getFirstShop().getName() + " and: "
 				+ tester.getSecondShop().getName() + " are compared");
 			System.out.println("Willemijn is echt retegeil!");		
@@ -415,51 +394,7 @@ public class Main {
         	e.printStackTrace();
 
         }
-		/*
-		ArrayList<Key> b = ShopList.get(0).getKey();
-		for (Key k:b){
-			System.out.println(k.getName());
-		}
-		*/
-		/*
-		 * Nu heeft elke Key dus ook een string Type die ofwel de waarde
-		 * "String" ofwel de waarde "Double1" heeft en aangeeft van welk
-		 * datatype de Key is. Je kunt deze waarde krijgen door de methode
-		 * key.getType() te gebruiken
-		 */
-
-		/*
-		 * // two string to compare for testing the initial algorithm Key k1 =
-		 * ShopList.get(1).getKey().get(4); Key k2 =
-		 * ShopList.get(2).getKey().get(4); boolean score = true; if
-		 * (k1.getType() == k2.getType()) { nameScore =
-		 * metricAlg.similarity(k1.getName(), k2.getName()); covScore =
-		 * -java.lang.Math.pow(k1.getCoverage() - k2.getCoverage(), 2.0);
-		 * divScore = metricAlg.diversit(k1.getDiversity(), k2.getDiversity());
-		 * if (k1.getType() == "String") { stringScore =
-		 * metricAlg.jaccard_similarity(k1.getUniqueStripString(),
-		 * k2.getUniqueStripString()); isString = 1; } else { double p =
-		 * TT.getp(k1.getUniquesplitList(), k2.getUniquesplitList()); double
-		 * jacardi =
-		 * metricAlg.getJacardSimilarityDouble(k1.getUniquesplitList(),
-		 * k2.getUniquesplitList()); doubleScore = java.lang.Math.max(p,
-		 * jacardi); } } else { score = false; }
-		 * 
-		 */
-
-		/*
-		 * System.out.println("we vergelijken de keys : " + k1.getName() +
-		 * " en  " + k2.getName()); System.out.println(
-		 * "deze key zijn van zelfde type " + score + ", de naam score = " +
-		 * nameScore + " the divScore = " + divScore); System.out.println(
-		 * "de covScore = " + covScore + " de stringScore = " + stringScore +
-		 * " de doubleScore " + doubleScore);
-		 */
+		
         
-                            /* IN ONDERSTE REGEL ZIJN DE }} PUUR OM HET PROGRAMMA TE LATEN RUNNEN
-      }
-
+ }
 }
-                            */
-				
- }}}}}}}}

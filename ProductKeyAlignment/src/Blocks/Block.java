@@ -8,6 +8,7 @@ package Blocks;
 
 public interface Block {
 	
+	
 	/**
 	 * method that returns the string corresponding to the block
 	 * @return

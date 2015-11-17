@@ -3,6 +3,7 @@ package KeyTypes;
 public class Double1Type implements Type {
 	
 	String key = new String();
+	String UnitMeasure = new String();
 	
 	public Double1Type(String inKey){
 		key = inKey;
@@ -14,5 +15,13 @@ public class Double1Type implements Type {
 	
 	public String getKey(){
 		return key;
+	}
+	
+	public void setUnitMeasure(String UM){
+		UnitMeasure = UM;
+	}
+	
+	public String getUnitMeasure(){
+		return UnitMeasure;
 	}
 }
