@@ -137,18 +137,18 @@ public class Main {
 		// All scores that can be obtained
 
 		// parameters to decide if a match is sufficiently good
-		Double[] nameSimilarityThresholds = new Double[]{0.50}; // for testing purposes
-		Double[] similarityThresholds = new Double[]{0.9}; // min score to be considered a pair
+		Double[] nameSimilarityThresholds = new Double[]{0.70}; // for testing purposes
+		Double[] similarityThresholds = new Double[]{1.0}; // min score to be considered a pair
 		
 		
 		// Weights of the obtained score (yet only the standard weights are used)
 
 		
-        Double[] key_weights            =new Double[]{0.8};//1.1 of 1 of 0.9
-        Double[] double_weights         =new Double[]{1.0};//2 ook 1.75-2.5
-        Double[] string_weights         =new Double[]{1.0};//2 ook 2-2.5
-        Double[] cov_weights            =new Double[]{0.2};//0.5 ook 0.2 -0.8
-        Double[] div_weights            =new Double[]{0.5};//0.5 ook 0-0.5
+        Double[] key_weights            =new Double[]{0.9};//1.1 of 1 of 0.9
+        Double[] double_weights         =new Double[]{1.7};//2 ook 1.75-2.5
+        Double[] string_weights         =new Double[]{0.0};//2 ook 2-2.5
+        Double[] cov_weights            =new Double[]{0.0};//0.5 ook 0.2 -0.8
+        Double[] div_weights            =new Double[]{0.0};//0.5 ook 0-0.5
         Double[] unit_weights           =new Double[]{0.0};//0.5 alles
         double highest_f1 = 0.0;
         int counter = 0;
@@ -235,11 +235,11 @@ public class Main {
 												isString = 0.4;
 
 											} else {
-												double p = TT.getp(key1.getUniquesplitList(),
-														key2.getUniquesplitList());
+												// double p = TT.getp(key1.getUniquesplitList(),
+												//		key2.getUniquesplitList());
 												double jacardi = metricAlg.getJacardSimilarityDouble(
 														key1.getUniquesplitList(), key2.getUniquesplitList());
-												doubleScore = java.lang.Math.max(p, jacardi);
+												doubleScore = java.lang.Math.max(0, jacardi);
 											}
 											
 											// Calculating the unit score
