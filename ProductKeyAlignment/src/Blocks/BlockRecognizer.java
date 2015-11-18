@@ -183,6 +183,9 @@ public class BlockRecognizer {
 		else if(s.matches("Year")){
 			return "years";
 		}
+		else if(s.matches("Nit")){
+			return "Nit";
+		}
 		// this ones can probably be added: p, ", i,
 		else{
 			return "leeg";
