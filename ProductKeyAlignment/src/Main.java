@@ -382,7 +382,7 @@ public class Main {
 			Alignments tester = bestAlignments.get(0);
 			outputStream.println("in this alignment the keys of the shops: " + tester.getFirstShop().getName() + " and: "
 				+ tester.getSecondShop().getName() + " are compared");
-			System.out.println("Willemijn is echt retegeil!");		
+			System.out.println("Ik heb het doorgegeven Joost en Romke!");		
 				for (keyPair pp : tester.getKeyPairList()) {
 					outputStream.println("key : " + pp.getKey1().getName() + " is matched with key: " + pp.getKey2().getName());
 					
