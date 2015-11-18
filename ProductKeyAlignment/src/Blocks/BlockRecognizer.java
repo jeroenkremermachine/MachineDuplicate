@@ -186,6 +186,12 @@ public class BlockRecognizer {
 		else if(s.matches("Nit")){
 			return "Nit";
 		}
+		else if(s.matches("In")){
+			return "In";
+		}
+		//else if(s.matches("x")){
+		//	return "dimension";
+		//}
 		// this ones can probably be added: p, ", i,
 		else{
 			return "leeg";
