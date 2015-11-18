@@ -137,9 +137,9 @@ public class Main {
 		// All scores that can be obtained
 
 		// parameters to decide if a match is sufficiently good
-		double minNameScore = 0.0; // not yet used
+		Double[] nameSimilarityThresholds = new Double[]{0.50}; // for testing purposes
 		Double[] similarityThresholds = new Double[]{0.9}; // min score to be considered a pair
-
+		
 		
 		// Weights of the obtained score (yet only the standard weights are used)
 
@@ -152,8 +152,8 @@ public class Main {
         Double[] unit_weights           =new Double[]{0.0};//0.5 alles
         double highest_f1 = 0.0;
         int counter = 0;
-   
-            for (double nameScoreWeight : key_weights){
+	   for (double nameSimilarityThreshold:nameSimilarityThresholds){
+	            for (double nameScoreWeight : key_weights){
                         for (double covScoreWeight : cov_weights){ 
                             for (double divScoreWeight : div_weights){ 
                                 for (double unitScoreWeight : unit_weights){ 
@@ -220,7 +220,7 @@ public class Main {
 										double isString = 0;
 										
 										if (key1.getType() != key2.getType()) {
-											break;
+											finalScore=-1;
 										} else {
 
 											nameScore = metricAlg.similarity(key1.getName(), key2.getName());
@@ -251,14 +251,21 @@ public class Main {
 											} else {
 												unitScore = -1;
 											}
-
+											if(nameScore>nameSimilarityThreshold){
 											finalScore = nameScore * nameScoreWeight + covScore * covScoreWeight
 													+ divScore * divScoreWeight + stringScore * stringScoreWeight
 													+ doubleScore * doubleScoreWeight + isString + unitScoreWeight * unitScore;
 												}
-
+										
+											else {
+												finalScore=0;
+											}
+										}	
+										if(key1.getName()=="Installation Required NR" && key2.getName()=="Features"){
+											System.out.println(finalScore+" namescore" +nameScore+" stringscore " +stringScore);
+										}
 									
-
+										
 
 										if (finalScore > highestKey2Score) {
 											highestKey2Score = finalScore;
@@ -367,6 +374,7 @@ public class Main {
                                         }
 									}	
             }
+	   }
             System.out.println(highest_f1);
             System.out.println(best_params);
 
