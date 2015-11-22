@@ -109,11 +109,11 @@ public class Main {
 					String UnitMeasure = keytyperecognizer.getUnitMeasure(bSet);
 					key.setUnitMeasure(UnitMeasure);
 				}
-				
-				System.out.println("Key "+ key.getName() + " is van type " + key.getType() + " en van subtype " + key.getSubType());
-				
+				if(key.getSubType().equals("Fraction") || key.getSubType().equals("Ratio")){
+					System.out.println("Key "+ key.getName() + " is van type " + key.getType() + " en van subtype " + key.getSubType());
+				}
 				// Blockset printen
-				if (key.getName().equals("DVI Inputs")){
+				if (key.getName().equals("Product Depth")){
 					for(int i = 0; i < bSet.getBlockSet().size(); i++){
 						System.out.println(bSet.getBlockSet().get(i).getBlock());
 					}

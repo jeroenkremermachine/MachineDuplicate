@@ -13,6 +13,15 @@ public class BlockRecognizer {
 			if(this.recognizeInteger(s)){
 				return new NumericalBlock(s, "Integer");
 			}
+			if(this.recognizeDouble(s)){
+				return new NumericalBlock(s, "Double");
+			}
+			if(this.recognizeFraction(s)){
+				return new NumericalBlock(s, "Fraction");
+			}
+			if(this.recognizeRatio(s)){
+				return new NumericalBlock(s, "Ratio");
+			}
 			else {
 				return new NumericalBlock(s,"leeg");
 			}
@@ -32,6 +41,28 @@ public class BlockRecognizer {
 	
 	public boolean recognizeInteger(String s){
 		return s.matches("[0-9]+");
+	}
+	
+	public boolean recognizeDouble(String s){
+		return s.matches("[0-9,.]+");
+	}
+	
+	/**
+	 * boolean method that determines whether string s is fraction
+	 * @param s
+	 * @return
+	 */
+	public boolean recognizeFraction(String s){
+		return s.matches("[0-9,./]+");
+	}
+
+	/**
+	 * boolean method that determines whether string s is ratio
+	 * @param s
+	 * @return
+	 */
+	public boolean recognizeRatio(String s){
+		return s.matches("[0-9,.:]+");
 	}
 	
 	public String recognizeUnitMeasure(String s){
