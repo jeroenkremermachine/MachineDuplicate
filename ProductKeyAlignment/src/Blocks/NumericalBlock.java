@@ -1,14 +1,15 @@
 package Blocks;
 
-public class StringBlock implements Block{
+public class NumericalBlock implements Block{
 
 	String st;
 	String type;
-	String subType = "leeg";
+	String subtype;
 	
-	public StringBlock(String s){
+	public NumericalBlock(String s, String sts){
 		st = s;
-		type = "String";
+		type = "Numerical";
+		subtype = sts;
 	}
 	
 	
@@ -21,7 +22,6 @@ public class StringBlock implements Block{
 	}
 	
 	public String getSubType(){
-		return subType;
+		return subtype;
 	}
-	
 }

@@ -4,6 +4,7 @@ public class UnitMeasureBlock implements Block {
 
 		String st;
 		String type;
+		String subType = "leeg";
 		
 		public UnitMeasureBlock(String s){
 			st = s;
@@ -17,6 +18,10 @@ public class UnitMeasureBlock implements Block {
 		
 		public String getType(){
 			return type;
+		}
+		
+		public String getSubType(){
+			return subType;
 		}
 		
 

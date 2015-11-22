@@ -1,20 +1,26 @@
 package KeyTypes;
 
-public class Double1Type implements Type {
+public class NumericalType implements Type {
 	
 	String key = new String();
+	String subType = new String();
 	String UnitMeasure = new String();
 	
-	public Double1Type(String inKey){
+	public NumericalType(String inKey, String inSubType){
 		key = inKey;
+		subType = inSubType;
 	}
 	
 	public String getType(){
-		return "Double1";
+		return "Numerical";
 	}
 	
 	public String getKey(){
 		return key;
+	}
+	
+	public String getSubType(){
+		return subType;
 	}
 	
 	public void setUnitMeasure(String UM){

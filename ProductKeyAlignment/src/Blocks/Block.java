@@ -20,5 +20,12 @@ public interface Block {
 	 * @return
 	 */
 	public String getType();
+	
+	/**
+	 * methods that returns the subtype of the block (see NameListBlocks class)
+	 * @return
+	 */
+	
+	public String getSubType();
 
 }

@@ -9,11 +9,15 @@ public class BlockRecognizer {
 	public Block createBlock(String s){
 		String UnitMeasure = this.recognizeUnitMeasure(s);
 		
-		if(this.recognizeDouble(s)){
-			return new DoubleBlock(s);
+		if(this.recognizeNumerical(s)){
+			if(this.recognizeInteger(s)){
+				return new NumericalBlock(s, "Integer");
+			}
+			else {
+				return new NumericalBlock(s,"leeg");
+			}
 		}
 		else if(!UnitMeasure.equals("leeg")){
-			
 			return new UnitMeasureBlock(UnitMeasure);
 		}
 		else {
@@ -22,8 +26,12 @@ public class BlockRecognizer {
 		
 	}
 	
-	public boolean recognizeDouble(String s){
+	public boolean recognizeNumerical(String s){
 		return (s.matches("[0-9,./:-]+") && !s.matches("[,./:-]+"));
+	}
+	
+	public boolean recognizeInteger(String s){
+		return s.matches("[0-9]+");
 	}
 	
 	public String recognizeUnitMeasure(String s){

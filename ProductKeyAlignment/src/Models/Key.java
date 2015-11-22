@@ -9,6 +9,7 @@ public class Key
     private String name;
     private ArrayList<Value> values;
     private String type;
+    private String subType;
     private String UnitMeasure;
     private ArrayList<String> stripString; // allStringValues alle string blocks
     private ArrayList<String> stripUniqueString; // k.StringValues all unique String Blocks
@@ -48,6 +49,15 @@ public class Key
     public String getType(){
         return type;
     }
+    
+    public void setSubType(String s){
+    	subType = s;
+    }
+    
+    public String getSubType(){
+    	return subType;
+    }
+    
     public ArrayList<Double> getsplitList()
     {
         return splitList;

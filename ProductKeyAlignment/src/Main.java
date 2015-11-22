@@ -95,21 +95,36 @@ public class Main {
 				ValueSet vSet = new ValueSet(key.getName(), key.getValues());
 				// BlockSet van de key construeren
 				BlockSet bSet = new BlockSet(vSet);
+
 				// Type bepalen
 				KeyTypeRecognizer keytyperecognizer = new KeyTypeRecognizer();
 				Type type = keytyperecognizer.createType(bSet);
-				String stringType = type.getType();				
+				String stringType = type.getType();	
+				String subType = type.getSubType();
 				// Type instellen van key
 				key.setType(stringType);
+				key.setSubType(subType);
 				// Unit measure instellen van key
 				if(bSet.getNrUnitMeasures()>0){
 					String UnitMeasure = keytyperecognizer.getUnitMeasure(bSet);
 					key.setUnitMeasure(UnitMeasure);
 				}
+				
+				System.out.println("Key "+ key.getName() + " is van type " + key.getType() + " en van subtype " + key.getSubType());
+				
+				// Blockset printen
+				if (key.getName().equals("DVI Inputs")){
+					for(int i = 0; i < bSet.getBlockSet().size(); i++){
+						System.out.println(bSet.getBlockSet().get(i).getBlock());
+					}
+					System.out.println(key.getType());
+					System.out.println(key.getSubType());
+				}
+
 
 				// laden van alle doubles in de Key's Double list
 				KeyDoubleFinder kdf = new KeyDoubleFinder();
-				if (key.getType() == "Double1") {
+				if (key.getType() == "Numerical") {
 					key.addsplitList(kdf.getDoubles(bSet));
 					key.addUniqueSplitList(kdf.getUniqueDoubles(key.getsplitList()));
 					key.addstdv(kdf.getStdvDoubles(key.getsplitList()));
@@ -119,15 +134,6 @@ public class Main {
 				key.addUniqueStripString(kdf.getUniqueStripString(key.getStripString()));
 				key.addDiversity(kdf.getUniqueValues(vSet));
 				key.addCoverage((double) vSet.size() / shop.getNrProducten());
-
-				/*
-				 * for(String s: key.getUniqueStripString()){
-				 * 
-				 * System.out.println(s + "                from key "
-				 * +key.getName() +"    " + key.getDiversity() + "   "+
-				 * key.getCoverage()); }
-				 */
-
 			}
 
 		}
@@ -261,9 +267,9 @@ public class Main {
 												finalScore=0;
 											}
 										}	
-										if(key1.getName()=="Installation Required NR" && key2.getName()=="Features"){
-											System.out.println(finalScore+" namescore" +nameScore+" stringscore " +stringScore);
-										}
+										//if(key1.getName()=="Screen Refresh Rate" && key2.getName()=="Refresh Rate"){
+										//	System.out.println(finalScore+" namescore" +nameScore+" stringscore " +doubleScore);
+										//}
 									
 										
 

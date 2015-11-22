@@ -78,7 +78,7 @@ public class BlockSet {
 	public int getNrDoubles() {
 		int i = 0;
 		for (Block b : blockList) {
-			if (b.getType().equals("Double")) {
+			if (b.getType().equals("Numerical")) {
 				i++;
 			}
 		}

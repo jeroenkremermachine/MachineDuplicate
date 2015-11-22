@@ -20,6 +20,8 @@ public interface Type {
 		 * method that gives the three weights used for the similarity score
 		 * @return
 		 */
+		
+		public String getSubType();
 
 		public String getKey();
 }
