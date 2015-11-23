@@ -36,14 +36,16 @@ public class metricAlg {
 		return cov_score;
 	}
 
-	public static double diversit(int d1, int d2) {
-		double straf = 0;
-		if (java.lang.Math.min(d1, d2) == 1) {
-			straf = -1;
-		} else {
-			straf = 0;
-		}
-		return straf;
+	public static double diversit(double d1, double d2) {
+		double div_score = 0;
+		
+		return div_score = -java.lang.Math.pow(d1-d2, 2.0);
+		//if (java.lang.Math.min(d1, d2) == 1) {
+		//	straf = -1;
+		//} else {
+		//	straf = 0;
+		//}
+		//return straf;
 	}
 
 	public static double getJacardSimilarityDouble(ArrayList<Double> a, ArrayList<Double> b) {

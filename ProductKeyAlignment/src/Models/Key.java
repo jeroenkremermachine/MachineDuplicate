@@ -16,7 +16,7 @@ public class Key
     private int nrStringValues; // nrStringValues aantal string blocks
     private ArrayList<Double> splitList; //allDouble VAlues
     private ArrayList<Double> uniqueSplitList; // k.DoubleValues
-    private int diversity;
+    private double diversity;
     private double coverage;
     private double stdv; //k.stdv
     
@@ -106,13 +106,13 @@ public class Key
     {
         return stripUniqueString;
     }
-      public void addDiversity(int a)
+      public void addDiversity(double a)
     {
         diversity=a;
  
 
         }
-     public int getDiversity()
+     public double getDiversity()
     {
         return diversity;
     }

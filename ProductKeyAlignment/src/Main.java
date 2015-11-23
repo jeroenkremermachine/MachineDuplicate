@@ -26,9 +26,14 @@ public class Main {
 		ArrayList<String> sites = new ArrayList<String>();
 		sites.add("bestbuy.com");
 		sites.add("newegg.com");
-		//sites.add("amazon.com");
-		//sites.add("thenerds.net");
-
+		sites.add("amazon.com");
+		sites.add("thenerds.net");
+		
+		// Reading Golden Standard
+		CSVreader obj = new CSVreader();
+		ArrayList<keyPair> GSpairlist = new ArrayList<keyPair>();
+		GSpairlist = obj.readfile();
+		
 		// Read data from each webshop
 		for (String site : sites) {
 			// Clear de lijsten producten en keys voor de nieuwe webshop
@@ -67,18 +72,12 @@ public class Main {
 			// System.out.println("webshop: "+ site + " has "+
 			// productList.size()
 			// +"producten");
+			
 			// Toevoegen van de webshop aan de dataset ShopList
 			Shop tempShop = new Shop(site, KeyList, productList.size());
-
 			ShopList.add(tempShop);
 
 		}
-		/*
-		 * De uiteindelijke dataset die we gebruiken is ShopList. Dit is een
-		 * ArrayList met de vier shopnamen en al hun bijbehorende KeyLists. Een
-		 * KeyList is een ArrayList van AL hun bijbehorende values in de
-		 * betreffende shop
-		 */
 
 		/*
 		 * In deze sectie bepalen we voor elke Key zijn datatype door zijn
@@ -95,13 +94,12 @@ public class Main {
 				ValueSet vSet = new ValueSet(key.getName(), key.getValues());
 				// BlockSet van de key construeren
 				BlockSet bSet = new BlockSet(vSet);
-
-				// Type bepalen
+				// (Sub)Type bepalen
 				KeyTypeRecognizer keytyperecognizer = new KeyTypeRecognizer();
 				Type type = keytyperecognizer.createType(bSet);
 				String stringType = type.getType();	
 				String subType = type.getSubType();
-				// Type instellen van key
+				// (Sub)Type instellen van key
 				key.setType(stringType);
 				key.setSubType(subType);
 				// Unit measure instellen van key
@@ -109,17 +107,15 @@ public class Main {
 					String UnitMeasure = keytyperecognizer.getUnitMeasure(bSet);
 					key.setUnitMeasure(UnitMeasure);
 				}
-				if(key.getSubType().equals("Integer") || key.getSubType().equals("Ratio")){
-					System.out.println("Key "+ key.getName() + " is van type " + key.getType() + " en van subtype " + key.getSubType());
-				}
+				
 				// Blockset printen
-				if (key.getName().equals("Product Depth")){
-					for(int i = 0; i < bSet.getBlockSet().size(); i++){
-						System.out.println(bSet.getBlockSet().get(i).getBlock());
-					}
-					System.out.println(key.getType());
-					System.out.println(key.getSubType());
-				}
+				//if (key.getName().equals("DVI Inputs")){
+				//	for(int i = 0; i < bSet.getBlockSet().size(); i++){
+				//		System.out.println(bSet.getBlockSet().get(i).getBlock());
+				//	}
+				//	System.out.println(key.getType());
+				//	System.out.println(key.getSubType());
+				//}
 
 
 				// laden van alle doubles in de Key's Double list
@@ -132,7 +128,7 @@ public class Main {
 				
 				key.addStripString(kdf.getStripString(bSet));
 				key.addUniqueStripString(kdf.getUniqueStripString(key.getStripString()));
-				key.addDiversity(kdf.getUniqueValues(vSet));
+				key.addDiversity(kdf.getUniqueValues(vSet)/shop.getNrProducten());
 				key.addCoverage((double) vSet.size() / shop.getNrProducten());
 			}
 
@@ -153,9 +149,11 @@ public class Main {
         Double[] key_weights            =new Double[]{0.9};//1.1 of 1 of 0.9
         Double[] double_weights         =new Double[]{1.7};//2 ook 1.75-2.5
         Double[] string_weights         =new Double[]{2.0};//2 ook 2-2.5
-        Double[] cov_weights            =new Double[]{0.0};//0.5 ook 0.2 -0.8
-        Double[] div_weights            =new Double[]{0.0};//0.5 ook 0-0.5
-        Double[] unit_weights           =new Double[]{0.0};//0.5 alles
+        Double[] cov_weights            =new Double[]{0.5};//0.5 ook 0.2 -0.8
+        Double[] div_weights            =new Double[]{0.5};//0.5 ook 0-0.5
+        Double[] unit_weights           =new Double[]{0.5};//0.5 alles
+        Double[] subType_weights		=new Double[]{0.5};
+        
         double highest_f1 = 0.0;
         int counter = 0;
 	   for (double nameSimilarityThreshold:nameSimilarityThresholds){
@@ -166,6 +164,7 @@ public class Main {
                                         for (double stringScoreWeight : string_weights){ 
                                                 for (double doubleScoreWeight : double_weights){
                                                 	for (double similarityThreshold : similarityThresholds){
+                                                		for (double subTypeWeight : subType_weights){
                                                 		// Object List with all the combinations of two different shops
                                                 		ArrayList<Alignments> allAlignments = new ArrayList<Alignments>();
                                                 	counter++;
@@ -220,6 +219,7 @@ public class Main {
 										double nameScore = 0;
 										double doubleScore = 0;
 										double stringScore = 0;
+										double subTypeScore = 0;
 										double covScore = 0;
 										double divScore = 0;
 										double unitScore = 0;
@@ -228,10 +228,8 @@ public class Main {
 										if (key1.getType() != key2.getType()) {
 											finalScore=-1;
 										} else {
-
+											
 											nameScore = metricAlg.similarity(key1.getName(), key2.getName());
-											// if (nameScore < minNameScore)
-											// {break;} 
 											covScore = -java.lang.Math.pow(key1.getCoverage() - key2.getCoverage(),
 													2.0);
 											divScore = metricAlg.diversit(key1.getDiversity(), key2.getDiversity());
@@ -246,6 +244,9 @@ public class Main {
 												double jacardi = metricAlg.getJacardSimilarityDouble(
 														key1.getUniquesplitList(), key2.getUniquesplitList());
 												doubleScore = java.lang.Math.max(0, jacardi);
+												if(key1.getSubType().equals(key2.getSubType())){
+													subTypeScore = 1;
+												}
 											}
 											
 											// Calculating the unit score
@@ -260,11 +261,12 @@ public class Main {
 											if(nameScore>nameSimilarityThreshold){
 											finalScore = nameScore * nameScoreWeight + covScore * covScoreWeight
 													+ divScore * divScoreWeight + stringScore * stringScoreWeight
-													+ doubleScore * doubleScoreWeight + isString + unitScoreWeight * unitScore;
+													+ doubleScore * doubleScoreWeight + isString + unitScoreWeight * unitScore
+													+ subTypeScore * subTypeWeight;
 												}
 										
 											else {
-												finalScore=0;
+												finalScore=-1;
 											}
 										}	
 										//if(key1.getName()=="Screen Refresh Rate" && key2.getName()=="Refresh Rate"){
@@ -310,11 +312,6 @@ public class Main {
 		double fp = 0;
 		double fn = 0;
 		
-		
-		// Reading Golden Standard
-		CSVreader obj = new CSVreader();
-		ArrayList<keyPair> GSpairlist = new ArrayList<keyPair>();
-		GSpairlist = obj.readfile();
 		ArrayList<keyPair> foundAlignments = allAlignments.get(0).getKeyPairList();
 			
 		// Loop over all possible key pairs
@@ -378,7 +375,8 @@ public class Main {
                                                 }
                                             }
                                         }
-									}	
+									}
+                        }
             }
 	   }
             System.out.println(highest_f1);
@@ -393,10 +391,9 @@ public class Main {
 		try{
 			PrintWriter outputStream = new PrintWriter(fileName);
 		
-			Alignments tester = bestAlignments.get(0);
+			Alignments tester = bestAlignments.get(2);
 			outputStream.println("in this alignment the keys of the shops: " + tester.getFirstShop().getName() + " and: "
-				+ tester.getSecondShop().getName() + " are compared");
-			System.out.println("Ik heb het doorgegeven Joost en Romke!");		
+				+ tester.getSecondShop().getName() + " are compared");		
 				for (keyPair pp : tester.getKeyPairList()) {
 					outputStream.println("key : " + pp.getKey1().getName() + " is matched with key: " + pp.getKey2().getName());
 					
