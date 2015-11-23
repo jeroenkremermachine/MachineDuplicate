@@ -7,8 +7,6 @@ import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 
 public class Main {
-	
-    
 
 	public static void main(String[] args) {
 		/*
@@ -24,10 +22,10 @@ public class Main {
 		ArrayList<Shop> ShopList = new ArrayList<Shop>();
 		// De vier verschillende webshops gespecificeerd
 		ArrayList<String> sites = new ArrayList<String>();
-		sites.add("bestbuy.com");
 		sites.add("newegg.com");
-		sites.add("amazon.com");
-		sites.add("thenerds.net");
+		sites.add("bestbuy.com");
+		//sites.add("amazon.com");
+		//sites.add("thenerds.net");
 		
 		// Reading Golden Standard
 		CSVreader obj = new CSVreader();
@@ -133,31 +131,96 @@ public class Main {
 			}
 
 		}
+				
 
-		Map<String, Double> best_params = new HashMap<String, Double>();
-		ArrayList<Alignments> bestAlignments = new ArrayList<Alignments>();
+		// Calculating all metrics for all possible keypairs		
+		ArrayList<keyPair> possibleKeyPairs = new ArrayList<keyPair>();
+		for (Key key1 : ShopList.get(0).getKey()){
+			for (Key key2 : ShopList.get(1).getKey()){
+				keyPair tempKeyPair = new keyPair(key1, key2);
+				// Are the keys of the same type?
+				if(!key1.getType().equals(key2.getType())){
+					continue;
+				}
+					// Calculate the different metrics and assign them to the Possible keypairs
+					double nameScore = metricAlg.similarity(key1.getName(), key2.getName());
+					double covScore = -java.lang.Math.pow(key1.getCoverage() - key2.getCoverage(),
+							2.0);
+					double divScore = -java.lang.Math.pow(key1.getDiversity(),key2.getDiversity());
+					tempKeyPair.setNameScore(nameScore);
+					tempKeyPair.setCovScore(covScore);
+					tempKeyPair.setDivScore(divScore);
+					
+					if (key1.getType() == "String") {
+						double stringScore = metricAlg.jaccard_similarity(key1.getUniqueStripString(),
+								key2.getUniqueStripString());
+						double isString = 0.4;
+						tempKeyPair.setStringScore(stringScore);
+						tempKeyPair.setIsString(isString);
+					} else {
+						// double p = TT.getp(key1.getUniquesplitList(),
+						//		key2.getUniquesplitList());
+						double jacardi = metricAlg.getJacardSimilarityDouble(
+								key1.getUniquesplitList(), key2.getUniquesplitList());
+						double doubleScore = java.lang.Math.max(0, jacardi);
+						tempKeyPair.setDoubleScore(doubleScore);
+						if(key1.getSubType().equals(key2.getSubType())){
+							double subTypeScore = 1;
+							tempKeyPair.setSubTypeScore(subTypeScore);
+						}
+					}
+					
+					// Calculating the unit score
+					double unitScore = 0.0;
+					if (key1.getUnitMeasure() == null || key2.getUnitMeasure() == null){
+						unitScore = 0.0;
+					}
+					else if (key1.getUnitMeasure() == key2.getUnitMeasure()){
+						unitScore = 1.0;
+					} else {
+						unitScore = -1.0;
+					}
+					tempKeyPair.setUnitScore(unitScore);
+				
+				
+				// Is the keypair in the golden standard?
+				boolean isGolden = false;
+				for (keyPair GSPair : GSpairlist){
+					if (GSPair.equals(tempKeyPair)){
+						isGolden = true;
+					}
+				}
+				
+				tempKeyPair.setIsGolden(isGolden);
+				
+				possibleKeyPairs.add(tempKeyPair);
+			}
+		}
+		
 		// All scores that can be obtained
+				Map<String, Double> best_params = new HashMap<String, Double>();
+				ArrayList<Alignments> bestAlignments = new ArrayList<Alignments>();
+				
 
-		// parameters to decide if a match is sufficiently good
-		Double[] nameSimilarityThresholds = new Double[]{0.5}; // for testing purposes
-		Double[] similarityThresholds = new Double[]{1.7}; // min score to be considered a pair
+				// parameters to decide if a match is sufficiently good
+				Double[] nameSimilarityThresholds = new Double[]{0.5}; // for testing purposes
+				Double[] similarityThresholds = new Double[]{1.0}; // min score to be considered a pair
+				
+				
+				// Weights of the obtained score (yet only the standard weights are used)
 		
-		
-		// Weights of the obtained score (yet only the standard weights are used)
-
-		
-        Double[] key_weights            =new Double[]{0.9};//1.1 of 1 of 0.9
-        Double[] double_weights         =new Double[]{1.7};//2 ook 1.75-2.5
-        Double[] string_weights         =new Double[]{2.0};//2 ook 2-2.5
-        Double[] cov_weights            =new Double[]{0.5};//0.5 ook 0.2 -0.8
-        Double[] div_weights            =new Double[]{0.5};//0.5 ook 0-0.5
-        Double[] unit_weights           =new Double[]{0.5};//0.5 alles
-        Double[] subType_weights		=new Double[]{0.5};
+        Double[] name_weights           =new Double[]{0.5};//1.1 of 1 of 0.9
+        Double[] double_weights         =new Double[]{1.0};//2 ook 1.75-2.5
+        Double[] string_weights         =new Double[]{1.0};//2 ook 2-2.5
+        Double[] cov_weights            =new Double[]{0.0};//0.5 ook 0.2 -0.8
+        Double[] div_weights            =new Double[]{0.0};//0.5 ook 0-0.5
+        Double[] unit_weights           =new Double[]{0.0};//0.5 alles
+        Double[] subType_weights		=new Double[]{0.0};
         
         double highest_f1 = 0.0;
         int counter = 0;
-	   for (double nameSimilarityThreshold:nameSimilarityThresholds){
-	            for (double nameScoreWeight : key_weights){
+        for (double nameSimilarityThreshold:nameSimilarityThresholds){
+	            for (double nameScoreWeight : name_weights){
                         for (double covScoreWeight : cov_weights){ 
                             for (double divScoreWeight : div_weights){ 
                                 for (double unitScoreWeight : unit_weights){ 
@@ -202,74 +265,38 @@ public class Main {
 						Key PairKey2 = null;
 						double highestPairScore = -1.0;
 
-						for (Key key1 : shop1.getKey()) {
+						for (keyPair CurrentKeyPair : possibleKeyPairs) {
 	
-							if (!assignedKeys1.contains(key1)) {
+							if (!assignedKeys1.contains(CurrentKeyPair.getKey1())) {
 
 								Key bestMatchingKey2 = null; // what is the best
 																// match with
 																// the current
 																// k1 and all k2
 								double highestKey2Score = -1.0;
-								for (Key key2 : shop2.getKey()) {
-						
 									
-									if (!assignedKeys2.contains(key2)) {
+									if (!assignedKeys2.contains(CurrentKeyPair.getKey2())) {
 										double finalScore = -1;
-										double nameScore = 0;
-										double doubleScore = 0;
-										double stringScore = 0;
-										double subTypeScore = 0;
-										double covScore = 0;
-										double divScore = 0;
-										double unitScore = 0;
-										double isString = 0;
+										double nameScore = CurrentKeyPair.getNameScore();
+										double doubleScore = CurrentKeyPair.getDoubleScore();
+										double stringScore = CurrentKeyPair.getStringScore();
+										double subTypeScore = CurrentKeyPair.getSubTypeScore();
+										double covScore = CurrentKeyPair.getCovScore();
+										double divScore = CurrentKeyPair.getDivScore();
+										double unitScore = CurrentKeyPair.getUnitScore();
+										double isString = CurrentKeyPair.getIsString();
 										
-										if (key1.getType() != key2.getType()) {
-											finalScore=-1;
-										} else {
-											
-											nameScore = metricAlg.similarity(key1.getName(), key2.getName());
-											covScore = -java.lang.Math.pow(key1.getCoverage() - key2.getCoverage(),
-													2.0);
-											divScore = metricAlg.diversit(key1.getDiversity(), key2.getDiversity());
-											if (key1.getType() == "String") {
-												stringScore = metricAlg.jaccard_similarity(key1.getUniqueStripString(),
-														key2.getUniqueStripString());
-												isString = 0.4;
-
-											} else {
-												// double p = TT.getp(key1.getUniquesplitList(),
-												//		key2.getUniquesplitList());
-												double jacardi = metricAlg.getJacardSimilarityDouble(
-														key1.getUniquesplitList(), key2.getUniquesplitList());
-												doubleScore = java.lang.Math.max(0, jacardi);
-												if(key1.getSubType().equals(key2.getSubType())){
-													subTypeScore = 1;
-												}
-											}
-											
-											// Calculating the unit score
-											if (key1.getUnitMeasure() == null || key2.getUnitMeasure() == null){
-												unitScore = 0;
-											}
-											else if (key1.getUnitMeasure() == key2.getUnitMeasure()){
-												unitScore = 1;
-											} else {
-												unitScore = -1;
-											}
 											if(nameScore>nameSimilarityThreshold){
 											finalScore = nameScore * nameScoreWeight + covScore * covScoreWeight
 													+ divScore * divScoreWeight + stringScore * stringScoreWeight
 													+ doubleScore * doubleScoreWeight + isString + unitScoreWeight * unitScore
 													+ subTypeScore * subTypeWeight;
-												}
-										
-											else {
+											// System.out.println(CurrentKeyPair.getKey1().getName() + " en " + CurrentKeyPair.getKey2().getName()+ " hebben een final score van " + finalScore);
+											}	else {
 												finalScore=-1;
 											}
-										}	
-										//if(key1.getName()=="Screen Refresh Rate" && key2.getName()=="Refresh Rate"){
+										
+										//if(CurrentKeyPair.getKey1().getName()=="Energy Star Compliant" && CurrentKeyPair.getKey2().getName()=="REnergy Star Compliant"){
 										//	System.out.println(finalScore+" namescore" +nameScore+" stringscore " +doubleScore);
 										//}
 									
@@ -277,19 +304,21 @@ public class Main {
 
 										if (finalScore > highestKey2Score) {
 											highestKey2Score = finalScore;
-											bestMatchingKey2 = key2;
+											bestMatchingKey2 = CurrentKeyPair.getKey2();
 										}
 									}
-								}
+									
+								
 								if (highestKey2Score > highestPairScore) {
 									highestPairScore = highestKey2Score;
-									bestPairKey1 = key1;
+									bestPairKey1 = CurrentKeyPair.getKey1();
 									bestPairKey2 = bestMatchingKey2;
 								}
 							}
 						}
+						
 						if (highestPairScore >= similarityThreshold) {
-							keyPair newKeyPair = new keyPair(bestPairKey1, bestPairKey2, highestPairScore);
+							keyPair newKeyPair = new keyPair(bestPairKey1, bestPairKey2);
 							current.addKeyPair(newKeyPair);
 							assigning = true;
 							assignedKeys1.add(bestPairKey1);
@@ -315,9 +344,7 @@ public class Main {
 		ArrayList<keyPair> foundAlignments = allAlignments.get(0).getKeyPairList();
 			
 		// Loop over all possible key pairs
-		for (Key key1 : ShopList.get(0).getKey()) {
-			for (Key key2 : ShopList.get(1).getKey()) {
-				keyPair tempKeyPair = new keyPair(key1, key2,0.0);
+		for (keyPair tempKeyPair : possibleKeyPairs){
 
 				boolean isAligned = false;
 				boolean isGolden = false;
@@ -330,11 +357,7 @@ public class Main {
 				}
 				
 				// If a keypair is also in the golden standard set isGolden to true
-				for (keyPair GSPair : GSpairlist){
-					if (GSPair.equals(tempKeyPair)){
-						isGolden = true;
-					}
-				}
+				isGolden = tempKeyPair.getIsGolden();
 				
 				// Determine if the keypair is a true/false positive/negative and count it
 				if (isAligned && isGolden) {
@@ -347,12 +370,13 @@ public class Main {
 					tn++;
 				}
 			}
-		}
+		
 		
 		// Calculate the different metrics
 		double recall = tp / (tp + fn);
 		double precision = tp / (tp + fp);
 		double f1Measure = 2 * tp / (2 * tp + fp + fn);
+		System.out.println(f1Measure);
 		
 
 
@@ -368,6 +392,8 @@ public class Main {
                                                                 best_params.put("covScoreWeight", covScoreWeight );
                                                                 best_params.put("divScoreWeight", divScoreWeight );
                                                                 best_params.put("unitScoreWeight",unitScoreWeight );
+                                                                best_params.put("subTypeWeight", subTypeWeight );
+                                                                best_params.put("Name Threshold", nameSimilarityThreshold);
                                                         		bestAlignments = allAlignments;
                                                             }
                                                         }
@@ -379,8 +405,8 @@ public class Main {
                         }
             }
 	   }
-            System.out.println(highest_f1);
-            System.out.println(best_params);
+            System.out.println("De hoogste F-score behaald is: "+ highest_f1);
+            System.out.println("met de volgende parameters" + best_params);
 
 
 		// In the next tester you can see what the algorithm has produced. Only
@@ -391,7 +417,7 @@ public class Main {
 		try{
 			PrintWriter outputStream = new PrintWriter(fileName);
 		
-			Alignments tester = bestAlignments.get(2);
+			Alignments tester = bestAlignments.get(0);
 			outputStream.println("in this alignment the keys of the shops: " + tester.getFirstShop().getName() + " and: "
 				+ tester.getSecondShop().getName() + " are compared");		
 				for (keyPair pp : tester.getKeyPairList()) {

@@ -35,7 +35,7 @@ public class CSVreader {
 				Key key2 = new Key(columns[3],"");
 				
 				
-				keyPair GSpair = new keyPair(key1,key2,0.0);			
+				keyPair GSpair = new keyPair(key1,key2);			
 				GSpairlist.add(GSpair);
 			}
 			
