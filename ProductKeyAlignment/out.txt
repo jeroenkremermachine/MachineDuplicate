@@ -1,0 +1,34 @@
+in this alignment the keys of the shops: newegg.com and: bestbuy.com are compared
+key : V-Chip is matched with key: V-Chip
+key : PC Input is matched with key: VGA Input
+key : Digital Audio is matched with key: Digital Tuner
+key : Smart TV is matched with key: Smart Capable
+key : Recommended Resolution is matched with key: Vertical Resolution
+key : Response Time is matched with key: Response Time
+key : Aspect Ratio is matched with key: Aspect Ratio
+key : Speakers is matched with key: Speakers
+key : Brand is matched with key: Brand
+key : Maximum Resolution is matched with key: Maximum Resolution
+key : Simulated Surround is matched with key: Simulated Surround
+key : Display Type is matched with key: Display Type
+key : Refresh Rate is matched with key: Screen Refresh Rate
+key : Parts is matched with key: Warranty Terms - Parts
+key : Labor is matched with key: Warranty Terms - Labor
+key : S-Video is matched with key: S-Video Inputs
+key : Speaker Location is matched with key: Speaker Location
+key : Feature is matched with key: Other Features
+key : Dynamic Contrast Ratio is matched with key: Dynamic Contrast Ratio
+key : Brightness is matched with key: Brightness
+key : Headphone is matched with key: Headphone Jacks
+key : Contrast Ratio is matched with key: Contrast Ratio
+key : Cabinet Color is matched with key: Color
+key : Screen Size is matched with key: Screen Size Class
+key : Energy Star Compliant is matched with key: Energy Star Compliant
+key : HDMI is matched with key: HDMI Inputs
+key : Picture in Picture (PIP) is matched with key: Picture-In-Picture
+key : Weight is matched with key: Weight
+key : VESA is matched with key: Mount Bracket/VESA Pattern
+key : Remote Control is matched with key: Remote Control Type
+key : Component Video is matched with key: Component Video Inputs
+key : 3-D Ready is matched with key: 3D-Ready
+key : Composite A/V is matched with key: Composite Inputs
