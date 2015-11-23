@@ -109,7 +109,7 @@ public class Main {
 					String UnitMeasure = keytyperecognizer.getUnitMeasure(bSet);
 					key.setUnitMeasure(UnitMeasure);
 				}
-				if(key.getSubType().equals("Fraction") || key.getSubType().equals("Ratio")){
+				if(key.getSubType().equals("Integer") || key.getSubType().equals("Ratio")){
 					System.out.println("Key "+ key.getName() + " is van type " + key.getType() + " en van subtype " + key.getSubType());
 				}
 				// Blockset printen
