@@ -1,42 +1,96 @@
-in this alignment the keys of the shops: newegg.com and: bestbuy.com are compared
-key : Speaker Location is matched with key: Speaker Location
-key : Brand is matched with key: Brand
-key : Simulated Surround is matched with key: Simulated Surround
-key : Energy Star Compliant is matched with key: Energy Star Compliant
-key : V-Chip is matched with key: V-Chip
-key : Display Type is matched with key: Display Type
-key : LED Technology is matched with key: 3D Technology
-key : Remote Control is matched with key: Remote Control Type
-key : Internet Connection is matched with key: Internet Connectable
-key : Headphone is matched with key: Headphone Jacks
-key : Cabinet Color is matched with key: Color
-key : Feature is matched with key: Other Features
-key : Series is matched with key: Gaming Series
-key : Tuner is matched with key: Digital Tuner
-key : Front/Side Inputs is matched with key: Inputs
-key : Type is matched with key: TV Type
-key : Video is matched with key: Composite Video Inputs
-key : Memory Card Slot is matched with key: SD Card Slot
-key : PC Input is matched with key: USB Input
-key : Picture in Picture (PIP) is matched with key: Picture-In-Picture
-key : 3-D Ready is matched with key: Wi-Fi Ready
-key : Recommended Resolution is matched with key: Native Resolution
-key : Smart TV is matched with key: Smart Capable
-key : 3-D Glasses Included is matched with key: Speakers Included
-key : Response Time is matched with key: Response Time
-key : Aspect Ratio is matched with key: Aspect Ratio
-key : Speakers is matched with key: Speakers
-key : Maximum Resolution is matched with key: Maximum Resolution
-key : Refresh Rate is matched with key: Screen Refresh Rate
-key : Parts is matched with key: Warranty Terms - Parts
-key : Labor is matched with key: Warranty Terms - Labor
-key : S-Video is matched with key: S-Video Inputs
-key : Dynamic Contrast Ratio is matched with key: Dynamic Contrast Ratio
-key : Brightness is matched with key: Brightness
-key : Contrast Ratio is matched with key: Contrast Ratio
-key : Screen Size is matched with key: Screen Size Class
-key : HDMI is matched with key: HDMI Inputs
-key : Weight is matched with key: Weight
-key : VESA is matched with key: Mount Bracket/VESA Pattern
-key : Component Video is matched with key: Component Video Inputs
-key : Composite A/V is matched with key: Composite Inputs
+f1Measure
+0.7272727272727273
+0.7857142857142857
+0.8571428571428571
+0.8148148148148148
+0.8695652173913043
+0.8181818181818182
+0.782608695652174
+recall
+0.6666666666666666
+0.9166666666666666
+0.8181818181818182
+0.9166666666666666
+0.8333333333333334
+0.75
+0.8181818181818182
+precision
+0.8
+0.6875
+0.9
+0.7333333333333333
+0.9090909090909091
+0.9
+0.75
+Threshold
+0.9
+0.9
+1.0
+0.9
+0.9
+0.9
+0.9
+nameThreshold
+0.6
+0.5
+0.6
+0.5
+0.6
+0.6
+0.6
+nameWeight
+0.5
+0.5
+0.5
+0.5
+0.5
+0.5
+0.5
+stringWeight
+0.7
+0.7
+0.7
+0.7
+0.7
+0.7
+0.7
+doubleWeight
+0.7
+0.7
+0.9
+0.7
+0.7
+0.7
+0.7
+covWeight
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+divWeight
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+unitWeight
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+0.0
+subTypeWeight
+0.0
+0.1
+0.0
+0.0
+0.1
+0.0
+0.0
