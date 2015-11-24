@@ -22,6 +22,9 @@ public class BlockRecognizer {
 			if(this.recognizeRatio(s)){
 				return new NumericalBlock(s, "Ratio");
 			}
+			if(this.recognizeDash(s)){
+				return new NumericalBlock(s, "Dash");
+			}
 			else {
 				return new NumericalBlock(s,"leeg");
 			}
@@ -30,9 +33,13 @@ public class BlockRecognizer {
 			return new UnitMeasureBlock(UnitMeasure);
 		}
 		else {
-			return new StringBlock(s);
+			if(this.recognizeBoolean(s)){
+				return new StringBlock(s,"Boolean");
+			}
+			else{
+				return new StringBlock(s, "leeg");
+			}
 		}
-		
 	}
 	
 	public boolean recognizeNumerical(String s){
@@ -63,6 +70,25 @@ public class BlockRecognizer {
 	 */
 	public boolean recognizeRatio(String s){
 		return s.matches("[0-9,.:]+");
+	}
+	
+	/**
+	 * boolean method that determines whether string s is dash
+	 * @param s
+	 * @return
+	 */
+	public boolean recognizeDash(String s){
+		return s.matches("[0-9,.-]+");
+	}
+	
+	/**
+	 * boolean method that determines whether string s is boolean
+	 * @param s
+	 * @return
+	 */
+	public boolean recognizeBoolean(String s){
+		return s.matches("Yes") || s.matches("yes") || s.matches("No") || s.matches("no")
+				|| s.matches("True") || s.matches("true") || s.matches("False") || s.matches("false");
 	}
 	
 	public String recognizeUnitMeasure(String s){

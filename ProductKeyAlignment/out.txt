@@ -1,34 +1,42 @@
 in this alignment the keys of the shops: newegg.com and: bestbuy.com are compared
+key : Speaker Location is matched with key: Speaker Location
+key : Brand is matched with key: Brand
+key : Simulated Surround is matched with key: Simulated Surround
+key : Energy Star Compliant is matched with key: Energy Star Compliant
 key : V-Chip is matched with key: V-Chip
-key : PC Input is matched with key: VGA Input
-key : Digital Audio is matched with key: Digital Tuner
+key : Display Type is matched with key: Display Type
+key : LED Technology is matched with key: 3D Technology
+key : Remote Control is matched with key: Remote Control Type
+key : Internet Connection is matched with key: Internet Connectable
+key : Headphone is matched with key: Headphone Jacks
+key : Cabinet Color is matched with key: Color
+key : Feature is matched with key: Other Features
+key : Series is matched with key: Gaming Series
+key : Tuner is matched with key: Digital Tuner
+key : Front/Side Inputs is matched with key: Inputs
+key : Type is matched with key: TV Type
+key : Video is matched with key: Composite Video Inputs
+key : Memory Card Slot is matched with key: SD Card Slot
+key : PC Input is matched with key: USB Input
+key : Picture in Picture (PIP) is matched with key: Picture-In-Picture
+key : 3-D Ready is matched with key: Wi-Fi Ready
+key : Recommended Resolution is matched with key: Native Resolution
 key : Smart TV is matched with key: Smart Capable
-key : Recommended Resolution is matched with key: Vertical Resolution
+key : 3-D Glasses Included is matched with key: Speakers Included
 key : Response Time is matched with key: Response Time
 key : Aspect Ratio is matched with key: Aspect Ratio
 key : Speakers is matched with key: Speakers
-key : Brand is matched with key: Brand
 key : Maximum Resolution is matched with key: Maximum Resolution
-key : Simulated Surround is matched with key: Simulated Surround
-key : Display Type is matched with key: Display Type
 key : Refresh Rate is matched with key: Screen Refresh Rate
 key : Parts is matched with key: Warranty Terms - Parts
 key : Labor is matched with key: Warranty Terms - Labor
 key : S-Video is matched with key: S-Video Inputs
-key : Speaker Location is matched with key: Speaker Location
-key : Feature is matched with key: Other Features
 key : Dynamic Contrast Ratio is matched with key: Dynamic Contrast Ratio
 key : Brightness is matched with key: Brightness
-key : Headphone is matched with key: Headphone Jacks
 key : Contrast Ratio is matched with key: Contrast Ratio
-key : Cabinet Color is matched with key: Color
 key : Screen Size is matched with key: Screen Size Class
-key : Energy Star Compliant is matched with key: Energy Star Compliant
 key : HDMI is matched with key: HDMI Inputs
-key : Picture in Picture (PIP) is matched with key: Picture-In-Picture
 key : Weight is matched with key: Weight
 key : VESA is matched with key: Mount Bracket/VESA Pattern
-key : Remote Control is matched with key: Remote Control Type
 key : Component Video is matched with key: Component Video Inputs
-key : 3-D Ready is matched with key: 3D-Ready
 key : Composite A/V is matched with key: Composite Inputs

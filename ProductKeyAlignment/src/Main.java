@@ -164,7 +164,7 @@ public class Main {
 								key1.getUniquesplitList(), key2.getUniquesplitList());
 						double doubleScore = java.lang.Math.max(0, jacardi);
 						tempKeyPair.setDoubleScore(doubleScore);
-						if(key1.getSubType().equals(key2.getSubType())){
+						if(key1.getSubType().equals(key2.getSubType()) && !key1.getSubType().equals("leeg")){
 							double subTypeScore = 1;
 							tempKeyPair.setSubTypeScore(subTypeScore);
 						}
@@ -204,7 +204,7 @@ public class Main {
 
 				// parameters to decide if a match is sufficiently good
 				Double[] nameSimilarityThresholds = new Double[]{0.5}; // for testing purposes
-				Double[] similarityThresholds = new Double[]{1.0}; // min score to be considered a pair
+				Double[] similarityThresholds = new Double[]{0.0,0.5,1.0}; // min score to be considered a pair
 				
 				
 				// Weights of the obtained score (yet only the standard weights are used)

@@ -6,8 +6,9 @@ public class StringBlock implements Block{
 	String type;
 	String subType = "leeg";
 	
-	public StringBlock(String s){
+	public StringBlock(String s, String st){
 		st = s;
+		subType = st;
 		type = "String";
 	}
 	
