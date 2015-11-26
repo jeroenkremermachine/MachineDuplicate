@@ -25,11 +25,29 @@ public class Main {
 		ArrayList<Double> subTypeWeightAll=new ArrayList<Double>();
 		ArrayList<Double> doubleWeightAll=new ArrayList<Double>();
 		
-
+		long start_time=System.currentTimeMillis();
+		
 		// Aanmaken van een een aantal classes
 		DataReader io = new DataReader();
+		long total_cycle=0;
+		int nrBootstraps=7;
+		double trainingPercentage=1;
+		// parameters to decide if a match is sufficiently good
+		
+		Double[] similarityThresholds = new Double[]{1.0}; // min score to be considered a pair
+		Double[] nameSimilarityThresholds = new Double[]{0.0,0.1,0.5}; // for testing purposes
 
-		int nrBootstraps=1;
+		// Weights of the obtained score (yet only the standard weights are used)
+
+		Double[] name_weights           =new Double[]{0.3,0.4,0.5,0.6,0.7,0.8,0.9};//1.1 of 1 of 0.9
+		Double[] double_weights         =new Double[]{0.0,0.1,0.2,0.3,0.4,0.5,0.6};//2 ook 1.75-2.5
+		Double[] string_weights         =new Double[]{0.3,0.4,0.5,0.6,0.7,0.8,0.9};//2 ook 2-2.5
+		Double[] cov_weights            =new Double[]{0.0,0.1,0.2,0.3};//0.5 ook 0.2 -0.8
+		Double[] div_weights            =new Double[]{0.0,0.2,0.4};//0.5 ook 0-0.5
+		Double[] unit_weights           =new Double[]{0.0,0.1,0.2,0.3};//0.5 alles
+		Double[] subType_weights		=new Double[]{0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9};
+		long iters=similarityThresholds.length*name_weights.length*nameSimilarityThresholds.length*double_weights.length*string_weights.length*cov_weights.length*div_weights.length*unit_weights.length*subType_weights.length;
+		System.out.println(iters + " iterations per bootstrap");
 		// ShopList wordt de uiteindelijke dataset waar we mee gaan werken.
 		ArrayList<Product> productList = new ArrayList<Product>();
 		ArrayList<Shop> ShopList = new ArrayList<Shop>();
@@ -148,7 +166,7 @@ public class Main {
 		for (int boot=0; boot<nrBootstraps; boot++){
 			Random rand = new Random();
 			int GS_size=GSpairlist.size();
-			double trainingPercentage=0.63;
+			
 			int trainingDuplicates=(int) Math.floor(GS_size*trainingPercentage);
 
 			ArrayList<Key>trainingFirst=new ArrayList<Key>(); // trainingsset first webshop
@@ -232,7 +250,7 @@ public class Main {
 			//created training and test set
 			
 
-	
+			long start_time_bootstrap=System.currentTimeMillis();
 			// Calculating all metrics for all possible keypairs		
 			ArrayList<keyPair> possibleKeyPairs = new ArrayList<keyPair>();
 			for (Key key1 : trainingFirst){
@@ -306,24 +324,11 @@ public class Main {
 			ArrayList<Alignments> bestAlignments = new ArrayList<Alignments>();
 
 
-			// parameters to decide if a match is sufficiently good
-			Double[] nameSimilarityThresholds = new Double[]{0.0,0.5,1.0}; // for testing purposes
-			Double[] similarityThresholds = new Double[]{0.5,1.0,1.5,2.0}; // min score to be considered a pair
-
-
-			// Weights of the obtained score (yet only the standard weights are used)
-
-			Double[] name_weights           =new Double[]{0.0,0.5,1.0,1.5,2.0};//1.1 of 1 of 0.9
-			Double[] double_weights         =new Double[]{0.0,0.5,1.0,1.5,2.0};//2 ook 1.75-2.5
-			Double[] string_weights         =new Double[]{0.0,0.5,1.0,1.5,2.0};//2 ook 2-2.5
-			Double[] cov_weights            =new Double[]{0.0,0.5,1.0,1.5,2.0};//0.5 ook 0.2 -0.8
-			Double[] div_weights            =new Double[]{0.0,0.5,1.0,1.5,2.0};//0.5 ook 0-0.5
-			Double[] unit_weights           =new Double[]{0.0,0.5,1.0,1.5,2.0};//0.5 alles
-			Double[] subType_weights		=new Double[]{0.0,0.5,1.0,1.5,2.0};
 
 
 			double highest_f1 = 0.0;
 			int counter = 0;
+			total_cycle=0;
 			for (double nameSimilarityThreshold:nameSimilarityThresholds){
 				for (double nameScoreWeight : name_weights){
 					for (double covScoreWeight : cov_weights){ 
@@ -334,9 +339,11 @@ public class Main {
 										for (double similarityThreshold : similarityThresholds){
 											for (double subTypeWeight : subType_weights){
 												// Object List with all the combinations of two different shops
+												total_cycle=0;
+												long cycle_start=System.currentTimeMillis();
 												ArrayList<Alignments> allAlignments = new ArrayList<Alignments>();
 												counter++;
-												System.out.println(counter);
+												//System.out.println(counter);
 
 												ArrayList<Shop> checkedShops = new ArrayList<Shop>(); // checked welke
 												// shops al een
@@ -500,7 +507,12 @@ public class Main {
 													best_params.put("subTypeWeight", subTypeWeight );
 													best_params.put("Name Threshold", nameSimilarityThreshold);
 													bestAlignments = allAlignments;
+													
+													
+													
 												}
+												long cycle_end=System.currentTimeMillis();
+												total_cycle=total_cycle+(cycle_end-cycle_start);
 											}
 										}
 									}
@@ -510,8 +522,13 @@ public class Main {
 					}
 				}
 			}
-			System.out.println("De hoogste F-score behaald is: "+ highest_f1 +" bootstrap");
+			double meancycle = ((double) total_cycle/iters); 
+			long end_time_bootstrap=System.currentTimeMillis();
+			long bootstrap_time=(end_time_bootstrap-start_time_bootstrap)/60000;
 			
+			System.out.println("De hoogste F-score behaald is: "+ highest_f1 +" bootstrap" + boot+" The time spend = "+ bootstrap_time + " minutes, the mean cycle time " + meancycle + "   "+possibleKeyPairs.size() +" keypairs" );
+
+			if(trainingPercentage<1){
 
 			// In the next tester you can see what the algorithm has produced. Only
 			// alignment 0 performs pretty well
@@ -527,8 +544,7 @@ public class Main {
 					}
 					// Calculate the different metrics and assign them to the Possible keypairs
 					double nameScore = metricAlg.similarity(key1.getName(), key2.getName());
-					double covScore = -java.lang.Math.pow(key1.getCoverage() - key2.getCoverage(),
-							2.0);
+					double covScore = -java.lang.Math.pow(key1.getCoverage() - key2.getCoverage(),2.0);
 					double divScore = -java.lang.Math.pow(key1.getDiversity(),key2.getDiversity());
 					tempKeyPair.setNameScore(nameScore);
 					tempKeyPair.setCovScore(covScore);
@@ -770,6 +786,10 @@ public class Main {
 			
 			
 		}
+		}
+		long end_time=System.currentTimeMillis();
+		long time=(end_time-start_time)/60000;
+		System.out.println("Total time spend = "+ time + " minutes");
 		String fileName= "out.txt";
 
 		try{
