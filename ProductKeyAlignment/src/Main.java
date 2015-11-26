@@ -29,7 +29,7 @@ public class Main {
 		// Aanmaken van een een aantal classes
 		DataReader io = new DataReader();
 
-		int nrBootstraps=7;
+		int nrBootstraps=1;
 		// ShopList wordt de uiteindelijke dataset waar we mee gaan werken.
 		ArrayList<Product> productList = new ArrayList<Product>();
 		ArrayList<Shop> ShopList = new ArrayList<Shop>();
@@ -290,6 +290,7 @@ public class Main {
 						
 						if (GSPair.equals(tempKeyPair)){
 							isGolden = true;
+							break;
 						}
 					}
 
@@ -306,19 +307,19 @@ public class Main {
 
 
 			// parameters to decide if a match is sufficiently good
-			Double[] nameSimilarityThresholds = new Double[]{0.4,0.5,0.6}; // for testing purposes
-			Double[] similarityThresholds = new Double[]{0.9,1.0,1.1}; // min score to be considered a pair
+			Double[] nameSimilarityThresholds = new Double[]{0.0,0.5,1.0}; // for testing purposes
+			Double[] similarityThresholds = new Double[]{0.5,1.0,1.5,2.0}; // min score to be considered a pair
 
 
 			// Weights of the obtained score (yet only the standard weights are used)
 
-			Double[] name_weights           =new Double[]{0.5,0.6,0.7};//1.1 of 1 of 0.9
-			Double[] double_weights         =new Double[]{0.7,0.8,0.9};//2 ook 1.75-2.5
-			Double[] string_weights         =new Double[]{0.7,0.8,0.9,1.0};//2 ook 2-2.5
-			Double[] cov_weights            =new Double[]{0.0,0.1};//0.5 ook 0.2 -0.8
-			Double[] div_weights            =new Double[]{0.0,0.1};//0.5 ook 0-0.5
-			Double[] unit_weights           =new Double[]{0.0,0.1};//0.5 alles
-			Double[] subType_weights		=new Double[]{0.0,0.1};
+			Double[] name_weights           =new Double[]{0.0,0.5,1.0,1.5,2.0};//1.1 of 1 of 0.9
+			Double[] double_weights         =new Double[]{0.0,0.5,1.0,1.5,2.0};//2 ook 1.75-2.5
+			Double[] string_weights         =new Double[]{0.0,0.5,1.0,1.5,2.0};//2 ook 2-2.5
+			Double[] cov_weights            =new Double[]{0.0,0.5,1.0,1.5,2.0};//0.5 ook 0.2 -0.8
+			Double[] div_weights            =new Double[]{0.0,0.5,1.0,1.5,2.0};//0.5 ook 0-0.5
+			Double[] unit_weights           =new Double[]{0.0,0.5,1.0,1.5,2.0};//0.5 alles
+			Double[] subType_weights		=new Double[]{0.0,0.5,1.0,1.5,2.0};
 
 
 			double highest_f1 = 0.0;
@@ -335,7 +336,7 @@ public class Main {
 												// Object List with all the combinations of two different shops
 												ArrayList<Alignments> allAlignments = new ArrayList<Alignments>();
 												counter++;
-												//System.out.println(counter);
+												System.out.println(counter);
 
 												ArrayList<Shop> checkedShops = new ArrayList<Shop>(); // checked welke
 												// shops al een
@@ -393,7 +394,7 @@ public class Main {
 																			if(nameScore>nameSimilarityThreshold){
 																				finalScore = nameScore * nameScoreWeight + covScore * covScoreWeight
 																						+ divScore * divScoreWeight + stringScore * stringScoreWeight
-																						+ doubleScore * doubleScoreWeight + isString + unitScoreWeight * unitScore
+																						+ doubleScore * doubleScoreWeight + unitScoreWeight * unitScore
 																						+ subTypeScore * subTypeWeight;
 																				// System.out.println(CurrentKeyPair.getKey1().getName() + " en " + CurrentKeyPair.getKey2().getName()+ " hebben een final score van " + finalScore);
 																			}	else {
@@ -572,6 +573,7 @@ public class Main {
 						
 						if (GSPair.equals(tempKeyPair)){
 							isGolden = true;
+							continue;
 						}
 					}
 
@@ -592,13 +594,13 @@ public class Main {
 
 			// Weights of the obtained score (yet only the standard weights are used)
 
-			Double name_weightTest         	=best_params.get("nameScoreWeight");
+			Double name_weightTest         	 =best_params.get("nameScoreWeight");
 			Double double_weightTest         =best_params.get("doubleScoreWeight");
 			Double string_weightTest         =best_params.get("stringScoreWeight");
 			Double cov_weightTest            =best_params.get("covScoreWeight");
 			Double div_weightTest            =best_params.get("divScoreWeight");
 			Double unit_weightTest           =best_params.get("unitScoreWeight");
-			Double subType_weightTest		=best_params.get("subTypeWeight");
+			Double subType_weightTest		 =best_params.get("subTypeWeight");
 			
 			thresholdAll.add(similarityThresholdTest);
 			nameThresholdAll.add(nameSimilarityThresholdsTest);
@@ -670,7 +672,7 @@ public class Main {
 																			if(nameScore>nameSimilarityThresholdsTest){
 																				finalScore = nameScore * name_weightTest + covScore * cov_weightTest
 																						+ divScore * div_weightTest + stringScore * string_weightTest
-																						+ doubleScore * double_weightTest + isString + unit_weightTest * unitScore
+																						+ doubleScore * double_weightTest  + unit_weightTest * unitScore
 																						+ subTypeScore * subType_weightTest;
 																				// System.out.println(CurrentKeyPair.getKey1().getName() + " en " + CurrentKeyPair.getKey2().getName()+ " hebben een final score van " + finalScore);
 																			}	else {
